@@ -37,7 +37,8 @@ To address this, we, the students of the Department of Information Technology En
 - **React Router**: For managing navigation between pages (e.g., Home and Discover).
 - **JavaScript (ES6+)**: The core language powering the app’s logic.
 - **Node.js**: Required for the development environment to run the React app.
-
+- **Github**: For controll tools
+- **Cloudflare**: Hosting Web
 ---
 
 ## Setup Instructions
@@ -143,6 +144,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 - **Project Team**: Students of the Department of Information Technology Engineering (8th generation) at Lao Thomorn.
 - **Advisor**: Ky Sok Lay
-- **Contributors**: Special thanks to everyone who has contributed to this project.
 
 ---
