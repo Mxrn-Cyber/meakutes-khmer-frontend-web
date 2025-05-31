@@ -4,7 +4,7 @@ export const newsEvents = [
     title: "Water Festival",
     date: "November 25",
     location: "Phnom Penh",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Celebrate the traditional boat racing event in Phnom Penh.",
   },
   {
@@ -12,7 +12,7 @@ export const newsEvents = [
     title: "Khmer New Year",
     date: "April 13 - April 16",
     location: "Nationwide",
-    pic: "/src/assets/palace.png",
+    pic: "/palace.png",
     description: "Enjoy the biggest cultural celebration in Cambodia.",
   },
   {
@@ -20,7 +20,7 @@ export const newsEvents = [
     title: "Pchum Ben",
     date: "September 29 - October 1",
     location: "Nationwide",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Honor deceased ancestors during this significant festival.",
   },
   {
@@ -28,7 +28,7 @@ export const newsEvents = [
     title: "Royal Ploughing Ceremony",
     date: "May 12",
     location: "Phnom Penh",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Marks the beginning of the rice planting season.",
   },
   {
@@ -36,7 +36,7 @@ export const newsEvents = [
     title: "Chinese New Year",
     date: "January 22",
     location: "Phnom Penh",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Celebrate the Lunar New Year with fireworks and festivities.",
   },
   {
@@ -44,7 +44,7 @@ export const newsEvents = [
     title: "Independence Day",
     date: "November 9",
     location: "Phnom Penh",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Commemorate Cambodia's independence from France.",
   },
   {
@@ -52,7 +52,7 @@ export const newsEvents = [
     title: "King Norodom Sihamoni's Birthday",
     date: "May 14",
     location: "Phnom Penh",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Celebrate the birthday of the King of Cambodia.",
   },
   {
@@ -60,7 +60,7 @@ export const newsEvents = [
     title: "Visakha Bucha",
     date: "May 5",
     location: "Nationwide",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Celebrate the birth, enlightenment, and death of Buddha.",
   },
   {
@@ -68,7 +68,7 @@ export const newsEvents = [
     title: "Water Festival (Bon Om Touk)",
     date: "November 25",
     location: "Phnom Penh",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Experience the vibrant boat races on the Tonle Sap River.",
   },
   {
@@ -76,7 +76,7 @@ export const newsEvents = [
     title: "Fesival of Lights",
     date: "October 26",
     location: "Phnom Penh",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Illuminate the night with beautiful lights and lanterns.",
   },
   {
@@ -84,7 +84,7 @@ export const newsEvents = [
     title: "Angkor Sankranta",
     date: "April 13 - April 15",
     location: "Siem Reap",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "A celebration of Khmer culture and traditions at Angkor Wat.",
   },
   {
@@ -92,7 +92,7 @@ export const newsEvents = [
     title: "Buddha Day",
     date: "April 8",
     location: "Nationwide",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "A day dedicated to paying respect to Buddha.",
   },
   {
@@ -100,7 +100,7 @@ export const newsEvents = [
     title: "Bon Om Touk",
     date: "November 24",
     location: "Phnom Penh",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Celebration of the end of the rainy season with boat races.",
   },
   {
@@ -108,7 +108,7 @@ export const newsEvents = [
     title: "Khmer Surin Festival",
     date: "August 15",
     location: "Surin, Thailand",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "A cultural festival celebrating Khmer heritage.",
   },
   {
@@ -116,7 +116,7 @@ export const newsEvents = [
     title: "Chaul Chnam Thmey",
     date: "April 13 - April 15",
     location: "Nationwide",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Celebrate the Khmer New Year with family and friends.",
   },
   {
@@ -124,7 +124,7 @@ export const newsEvents = [
     title: "Khmer Traditional Dance Festival",
     date: "July 20",
     location: "Phnom Penh",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Showcase of traditional Khmer dance performances.",
   },
   {
@@ -132,7 +132,7 @@ export const newsEvents = [
     title: "Sea Festival",
     date: "December 6",
     location: "Sihanoukville",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Celebrate the beauty of Cambodia's coastline.",
   },
   {
@@ -140,7 +140,7 @@ export const newsEvents = [
     title: "Angkor Photo Festival",
     date: "December 1 - December 6",
     location: "Siem Reap",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "A platform for photographers to showcase their work.",
   },
   {
@@ -148,7 +148,7 @@ export const newsEvents = [
     title: "Kite Festival",
     date: "October 1",
     location: "Phnom Penh",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Enjoy colorful kite flying competitions.",
   },
   {
@@ -156,7 +156,7 @@ export const newsEvents = [
     title: "Heritage Walk",
     date: "March 15",
     location: "Phnom Penh",
-    pic: "/src/assets/angkor-morning.png",
+    pic: "/angkor-morning.png",
     description: "Explore the rich heritage of Cambodia through guided walks.",
   },
 ];

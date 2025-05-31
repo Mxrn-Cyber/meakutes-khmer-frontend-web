@@ -20,7 +20,7 @@ import { auth } from "../firebase";
 
 // Import the logo image (adjust the path based on your project structure)
 // Example: If logo.png is in the src/assets folder
-import logo from "../assets/logo.png"; // Replace with your actual path
+import logo from "/logo.png"; // Replace with your actual path
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);

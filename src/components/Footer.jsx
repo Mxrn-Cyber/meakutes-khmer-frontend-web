@@ -1,22 +1,32 @@
-import React from 'react';
-import { MapPin, Phone, Mail, Twitter, Facebook, Youtube, Linkedin } from 'lucide-react';
-import { avatar } from '@material-tailwind/react';
+import React from "react";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Twitter,
+  Facebook,
+  Youtube,
+  Linkedin,
+} from "lucide-react";
+import { avatar } from "@material-tailwind/react";
 
 export default function Footer() {
   return (
     <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        />
       </div>
-      
+
       <div className="relative z-10">
         {/* Main Footer Content */}
         <div className="max-w-7xl mx-auto px-6 py-16">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
-            
             {/* Company Section */}
             <div className="space-y-6">
               <h4 className="text-2xl font-bold text-white mb-6 relative">
@@ -24,7 +34,13 @@ export default function Footer() {
                 <div className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></div>
               </h4>
               <nav className="space-y-3">
-                {['About Us', 'Contact Us', 'Privacy Policy', 'Terms & Condition', 'FAQs & Help'].map((item) => (
+                {[
+                  "About Us",
+                  "Contact Us",
+                  "Privacy Policy",
+                  "Terms & Condition",
+                  "FAQs & Help",
+                ].map((item) => (
                   <a
                     key={item}
                     href="/"
@@ -64,14 +80,14 @@ export default function Footer() {
                   </span>
                 </div>
               </div>
-              
+
               {/* Social Links */}
               <div className="flex space-x-3 pt-4">
                 {[
-                  { Icon: Twitter, href: '/', color: 'hover:bg-blue-500' },
-                  { Icon: Facebook, href: '/', color: 'hover:bg-blue-600' },
-                  { Icon: Youtube, href: '/', color: 'hover:bg-red-600' },
-                  { Icon: Linkedin, href: '/', color: 'hover:bg-blue-700' }
+                  { Icon: Twitter, href: "/", color: "hover:bg-blue-500" },
+                  { Icon: Facebook, href: "/", color: "hover:bg-blue-600" },
+                  { Icon: Youtube, href: "/", color: "hover:bg-red-600" },
+                  { Icon: Linkedin, href: "/", color: "hover:bg-blue-700" },
                 ].map(({ Icon, href, color }, index) => (
                   <a
                     key={index}
@@ -90,12 +106,12 @@ export default function Footer() {
               </h4>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  'src/assets/avatar.png',
-                  'src/assets/avatar.png',
-                  'src/assets/avatar.png',
-                  'src/assets/avatar.png',
-                  'src/assets/avatar.png',
-                  'src/assets/avatar.png',
+                  "/avatar.png",
+                  "/avatar.png",
+                  "/avatar.png",
+                  "/avatar.png",
+                  "/avatar.png",
+                  "/avatar.png",
                 ].map((imageUrl, index) => (
                   <div
                     key={index}
@@ -116,7 +132,6 @@ export default function Footer() {
               </div>
             </div>
 
-
             {/* Newsletter Section */}
             <div className="space-y-6">
               <h4 className="text-2xl font-bold text-white mb-6 relative">
@@ -124,7 +139,8 @@ export default function Footer() {
                 <div className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-orange-500 to-red-600 rounded-full"></div>
               </h4>
               <p className="text-gray-300 leading-relaxed">
-                Stay updated with our latest news and exclusive offers. Join our community today!
+                Stay updated with our latest news and exclusive offers. Join our
+                community today!
               </p>
               <div className="relative">
                 <input
@@ -141,17 +157,20 @@ export default function Footer() {
         </div>
 
         {/* Footer Bottom */}
-         <div className="border-t border-gray-700/50 bg-slate-900/50 backdrop-blur-sm">
+        <div className="border-t border-gray-700/50 bg-slate-900/50 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-6 py-8">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <div className="text-gray-300 text-center md:text-left">
-                © {new Date().getFullYear()}{' '}
-                <a href="#" className="text-blue-400 hover:text-blue-300 transition-colors duration-300 border-b border-transparent hover:border-blue-300">
+                © {new Date().getFullYear()}{" "}
+                <a
+                  href="#"
+                  className="text-blue-400 hover:text-blue-300 transition-colors duration-300 border-b border-transparent hover:border-blue-300"
+                >
                   Meakutes-Khmer-APP
                 </a>
                 , All Rights Reserved.
                 <span className="block md:inline md:ml-2 mt-1 md:mt-0">
-                  Designed by{' '}
+                  Designed by{" "}
                   <a
                     href="https://github.com/Mxrn-Cyber"
                     className="text-purple-400 hover:text-purple-300 transition-colors duration-300 border-b border-transparent hover:border-purple-300"
@@ -163,7 +182,7 @@ export default function Footer() {
                 </span>
               </div>
               <nav className="flex space-x-6">
-                {['Home', 'Cookies', 'Help', 'FAQs'].map((item) => (
+                {["Home", "Cookies", "Help", "FAQs"].map((item) => (
                   <a
                     key={item}
                     href="/"

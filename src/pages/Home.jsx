@@ -18,11 +18,11 @@ function Home() {
 
   // Sample images for slideshow
   const slideImages = [
-    "/src/assets/angkor-morning.png",
-    "/src/assets/angkor-wat.jpg",
-    "/src/assets/monument.png",
-    "/src/assets/palace.png",
-    "/src/assets/profile-placeholder.jpg",
+    "/angkor-morning.png",
+    "/angkor-wat.jpg",
+    "/monument.png",
+    "/palace.png",
+    "/profile-placeholder.jpg",
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);

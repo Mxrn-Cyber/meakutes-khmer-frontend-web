@@ -8,6 +8,7 @@ export default defineConfig({
     alias: {
       "firebase/firestore": "firebase/firestore",
       "@": path.resolve(__dirname, "src"),
+      assetsInclude: ["**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.svg"],
       server: {
         host: true, // Allows access from the local network
         port: 5173, // Default port; change if needed
