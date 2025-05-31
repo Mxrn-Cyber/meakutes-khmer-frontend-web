@@ -1,5 +1,4 @@
-// src/pages/Login.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock, Chrome, Facebook } from "lucide-react";
 import {
@@ -20,6 +19,18 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState("");
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -60,34 +71,96 @@ const Login = () => {
       return;
     }
 
+    if (!isOnline) {
+      setApiError("You are offline. Please check your connection.");
+      return;
+    }
+
     setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, formData.email, formData.password);
       navigate("/", { state: { message: "Login successful!" } });
     } catch (error) {
-      setApiError(error.message || "Login failed. Please try again.");
+      console.error("Email/Password Login Error:", error.code, error.message);
+      switch (error.code) {
+        case "auth/user-not-found":
+          setApiError("No account found with this email.");
+          break;
+        case "auth/wrong-password":
+          setApiError("Incorrect password. Please try again.");
+          break;
+        case "auth/invalid-email":
+          setApiError("Invalid email address.");
+          break;
+        case "auth/network-request-failed":
+          setApiError("Network error. Please check your connection.");
+          break;
+        case "auth/too-many-requests":
+          setApiError("Too many attempts. Please try again later.");
+          break;
+        default:
+          setApiError(error.message || "Login failed. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleSocialLogin = async (providerName) => {
+    if (!isOnline) {
+      setApiError("You are offline. Please check your connection.");
+      return;
+    }
+
     setIsLoading(true);
     try {
       let provider;
       if (providerName === "google") {
         provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: "select_account" });
       } else if (providerName === "facebook") {
         provider = new FacebookAuthProvider();
+        provider.setCustomParameters({
+          prompt: "select_account",
+          display: "popup",
+        });
       }
-      await signInWithPopup(auth, provider);
+      console.log(`Attempting ${providerName} login...`);
+      const result = await signInWithPopup(auth, provider);
+      console.log(`${providerName} login result:`, result);
       navigate("/", {
         state: { message: `${providerName} login successful!` },
       });
     } catch (error) {
-      setApiError(
-        error.message || `${providerName} login failed. Please try again.`
-      );
+      console.error(`${providerName} Login Error:`, error.code, error.message);
+      switch (error.code) {
+        case "auth/popup-blocked":
+          setApiError("Popup was blocked. Please allow popups and try again.");
+          break;
+        case "auth/popup-closed-by-user":
+          setApiError("Login was cancelled. Please try again.");
+          break;
+        case "auth/account-exists-with-different-credential":
+          setApiError(
+            "An account already exists with this email but different credentials. Try another sign-in method or link accounts."
+          );
+          break;
+        case "auth/network-request-failed":
+          setApiError("Network error. Please check your connection.");
+          break;
+        case "auth/invalid-credential":
+          setApiError(
+            "Invalid credentials. Please check your provider settings."
+          );
+          break;
+        case "auth/too-many-requests":
+          setApiError("Too many attempts. Please try again later.");
+          break;
+        default:
+          setApiError(
+            error.message || `${providerName} login failed. Please try again.`
+          );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -107,9 +180,11 @@ const Login = () => {
 
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
           {apiError && (
-            <p className="mb-4 text-sm text-red-600 dark:text-red-400">
-              {apiError}
-            </p>
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg">
+              <p className="text-sm text-red-600 dark:text-red-400">
+                {apiError}
+              </p>
+            </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -191,7 +266,7 @@ const Login = () => {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !isOnline}
               className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isLoading ? (
@@ -221,7 +296,8 @@ const Login = () => {
           <div className="space-y-3">
             <button
               onClick={() => handleSocialLogin("google")}
-              className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 group"
+              disabled={isLoading || !isOnline}
+              className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Chrome className="w-5 h-5 text-red-500 mr-3" />
               <span className="text-gray-700 dark:text-gray-300 font-medium">
@@ -231,7 +307,8 @@ const Login = () => {
 
             <button
               onClick={() => handleSocialLogin("facebook")}
-              className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 group"
+              disabled={isLoading || !isOnline}
+              className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Facebook className="w-5 h-5 text-blue-600 mr-3" />
               <span className="text-gray-700 dark:text-gray-300 font-medium">

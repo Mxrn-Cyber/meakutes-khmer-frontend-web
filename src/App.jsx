@@ -1,11 +1,10 @@
-// src/App.jsx
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { auth } from "./firebase";
 import Home from "./pages/Home.jsx";
 import Discover from "./pages/Discover.jsx";
 import Popular from "./pages/Popular.jsx";
-import News from "./pages/News.jsx";
+import NewsEvents from "./pages/NewsEvents.jsx";
 import Article from "./pages/Article.jsx";
 import About from "./pages/About.jsx";
 import Login from "./pages/Login.jsx";
@@ -19,6 +18,7 @@ import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import Loading from "./components/Loading.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import TripDetail from "./pages/TripDetail.jsx";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -41,12 +41,13 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/discover" element={<Discover />} />
             <Route path="/popular" element={<Popular />} />
-            <Route path="/news" element={<News />} />
+            <Route path="/news" element={<NewsEvents />} />
             <Route path="/article/:id" element={<Article />} />
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgot" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/trip/:id" element={<TripDetail />} />
             <Route path="/signup" element={<Signup />} />
             <Route
               path="/profile"

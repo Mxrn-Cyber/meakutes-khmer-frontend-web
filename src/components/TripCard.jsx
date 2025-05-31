@@ -1,9 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Star, Heart, Clock, Users, MapPin } from "lucide-react";
 
 function TripCard({ trip, onProvinceClick, isHighlighted, onRateTrip }) {
   const [isLiked, setIsLiked] = useState(false);
   const [hoverRating, setHoverRating] = useState(null);
+  const navigate = useNavigate();
+
+  // Function to check if the trip is in favorites
+  const checkIsFavourite = () => {
+    const favouriteTrips = JSON.parse(
+      localStorage.getItem("favouriteTrips") || "[]"
+    );
+    const isFavourite = favouriteTrips.some(
+      (favTrip) => favTrip.id === trip.id
+    );
+    setIsLiked(isFavourite);
+  };
+
+  // Check if trip is in favorites on component mount
+  useEffect(() => {
+    checkIsFavourite();
+  }, [trip.id]);
+
+  // Listen for favorites update events
+  useEffect(() => {
+    const handleFavouritesUpdate = () => {
+      // Slight delay to ensure localStorage has been updated
+      setTimeout(() => {
+        checkIsFavourite();
+      }, 50);
+    };
+
+    window.addEventListener("favouritesUpdated", handleFavouritesUpdate);
+    return () => {
+      window.removeEventListener("favouritesUpdated", handleFavouritesUpdate);
+    };
+  }, [trip.id]);
 
   const renderStars = (rating, interactive = false) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -17,69 +50,113 @@ function TripCard({ trip, onProvinceClick, isHighlighted, onRateTrip }) {
             ? "text-yellow-400 fill-current opacity-50"
             : "text-gray-300"
         }`}
-        onClick={interactive ? () => onRateTrip(trip.id, i + 1) : undefined}
+        onClick={
+          interactive
+            ? () => {
+                onRateTrip(trip.id, i + 1);
+                console.log(`Rated trip ${trip.id} with ${i + 1} stars`);
+              }
+            : undefined
+        }
         onMouseEnter={interactive ? () => setHoverRating(i + 1) : undefined}
         onMouseLeave={interactive ? () => setHoverRating(null) : undefined}
+        role={interactive ? "button" : undefined}
+        aria-label={
+          interactive
+            ? `Rate ${i + 1} star${i + 1 === 1 ? "" : "s"}`
+            : undefined
+        }
       />
     ));
   };
 
+  const handleViewDetails = () => {
+    navigate(`/trip/${trip.id}`);
+  };
+
+  const handleToggleFavourite = () => {
+    const favouriteTrips = JSON.parse(
+      localStorage.getItem("favouriteTrips") || "[]"
+    );
+
+    if (isLiked) {
+      // Remove from favorites
+      const updatedFavourites = favouriteTrips.filter(
+        (favTrip) => favTrip.id !== trip.id
+      );
+      localStorage.setItem("favouriteTrips", JSON.stringify(updatedFavourites));
+      setIsLiked(false);
+      console.log(`Removed trip ${trip.name} from favourites`);
+    } else {
+      // Add to favorites
+      const updatedFavourites = [...favouriteTrips, trip];
+      localStorage.setItem("favouriteTrips", JSON.stringify(updatedFavourites));
+      setIsLiked(true);
+      console.log(`Added trip ${trip.name} to favourites`);
+    }
+
+    // Dispatch custom event to notify other components of changes
+    window.dispatchEvent(new CustomEvent("favouritesUpdated"));
+  };
+
   return (
     <div
-      className={`group relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden ${
-        isHighlighted ? "ring-4 ring-blue-500 ring-opacity-50 scale-105" : ""
+      className={`group relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden ${
+        isHighlighted ? "ring-2 ring-blue-500 ring-opacity-50 scale-102" : ""
       }`}
     >
       <div className="relative h-48 overflow-hidden">
         <img
           src={trip.image}
           alt={trip.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          onError={() => console.error(`Failed to load image for ${trip.name}`)}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
         <button
-          onClick={() => setIsLiked(!isLiked)}
-          className="absolute top-4 right-4 p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all duration-300"
+          onClick={handleToggleFavourite}
+          className="absolute top-3 right-3 p-1.5 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all duration-200"
+          aria-label={isLiked ? "Remove from favourites" : "Add to favourites"}
         >
           <Heart
-            size={20}
+            size={18}
             className={`${
               isLiked
                 ? "text-red-500 fill-current"
-                : "text-white hover:text-red-300"
-            } transition-colors duration-300`}
+                : "text-white fill-none hover:text-red-200"
+            } transition-all duration-200 group-hover:scale-110`}
           />
         </button>
         <button
           onClick={() => onProvinceClick(trip.province)}
-          className="absolute top-4 left-4 bg-blue-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-semibold hover:bg-blue-700 transition-all duration-300 flex items-center gap-1"
+          className="absolute top-3 left-3 bg-blue-600/80 text-white px-2 py-1 rounded-full text-xs font-medium hover:bg-blue-700 transition-all duration-200 flex items-center gap-1"
         >
-          <MapPin size={12} />
+          <MapPin size={10} />
           {trip.province}
         </button>
-        <div className="absolute bottom-4 left-4 flex gap-2">
-          <div className="bg-white/90 backdrop-blur-sm text-gray-800 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-            <Clock size={12} />
+        <div className="absolute bottom-2 left-2 flex gap-1">
+          <div className="bg-white/80 backdrop-blur-sm text-gray-800 px-1.5 py-0.5 rounded-full text-xs font-medium flex items-center gap-1">
+            <Clock size={10} />
             {trip.duration}
           </div>
-          <div className="bg-green-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
+          <div className="bg-green-500/80 backdrop-blur-sm text-white px-1.5 py-0.5 rounded-full text-xs font-medium">
             {trip.access}
           </div>
         </div>
       </div>
-      <div className="p-5">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
           {trip.name}
         </h3>
-        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">
+        <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
           {trip.description}
         </p>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5">
               {renderStars(trip.rating, true)}
             </div>
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">
+            <span className="text-sm font-medium text-gray-900 dark:text-white">
               {trip.rating}
             </span>
             <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -87,25 +164,21 @@ function TripCard({ trip, onProvinceClick, isHighlighted, onRateTrip }) {
             </span>
           </div>
           <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
-            <Users size={14} />
+            <Users size={12} />
             <span className="text-xs">{trip.accessibility}</span>
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-semibold text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">
-              Free Visit
-            </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              Best time: {trip.bestTime}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="bg-blue-600 hover:bg-blue-700 отношение: text-white px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105 flex items-center gap-1">
-              <MapPin size={14} />
-              View Details
-            </button>
-          </div>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            Best time: {trip.bestTime}
+          </span>
+          <button
+            onClick={handleViewDetails}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-200 hover:shadow-md flex items-center gap-1"
+          >
+            <MapPin size={12} />
+            Details
+          </button>
         </div>
       </div>
     </div>

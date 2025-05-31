@@ -1,4 +1,3 @@
-// src/pages/SignUp.jsx
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -107,23 +106,26 @@ const SignUp = () => {
       setErrors(newErrors);
       return;
     }
+
+    if (!isOnline) {
+      setApiError("You are offline. Please check your connection.");
+      return;
+    }
+
     setIsLoading(true);
     try {
-      // Create user account
       const { user } = await createUserWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
 
-      console.log("User created successfully:", user.uid);
+      console.log("Email signup successful:", user.uid);
 
-      // Update display name
       await updateProfile(user, {
         displayName: `${formData.firstName} ${formData.lastName}`,
       });
 
-      // Always try to save to Firestore with enhanced error handling
       const userDocData = {
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -131,17 +133,18 @@ const SignUp = () => {
         phone: formData.phone,
         createdAt: new Date(),
         updatedAt: new Date(),
+        signupMethod: "email",
       };
 
       try {
         await setDoc(doc(db, "users", user.uid), userDocData);
-        console.log(
-          "User document created successfully in Firestore:",
-          userDocData
-        );
+        console.log("User document created in Firestore:", userDocData);
       } catch (firestoreError) {
-        console.error("Firestore Error:", firestoreError);
-        // Don't block the signup process, but warn the user
+        console.error(
+          "Firestore Error:",
+          firestoreError.code,
+          firestoreError.message
+        );
         if (firestoreError.code === "unavailable") {
           setApiError(
             "You are offline. User data will sync when you reconnect."
@@ -161,14 +164,7 @@ const SignUp = () => {
         state: { message: "Account created successfully! Welcome!" },
       });
     } catch (error) {
-      console.error(
-        "Signup Error:",
-        error,
-        "Code:",
-        error.code,
-        "Message:",
-        error.message
-      );
+      console.error("Email Signup Error:", error.code, error.message);
       switch (error.code) {
         case "auth/email-already-in-use":
           setApiError("This email is already registered. Please use another.");
@@ -187,6 +183,9 @@ const SignUp = () => {
         case "auth/network-request-failed":
           setApiError("Network error. Please check your connection.");
           break;
+        case "auth/too-many-requests":
+          setApiError("Too many attempts. Please try again later.");
+          break;
         default:
           setApiError(error.message || "Signup failed. Please try again.");
       }
@@ -196,22 +195,34 @@ const SignUp = () => {
   };
 
   const handleSocialSignUp = async (providerName) => {
+    if (!isOnline) {
+      setApiError("You are offline. Please check your connection.");
+      return;
+    }
+
     setIsLoading(true);
     try {
       let provider;
-      if (providerName === "google") provider = new GoogleAuthProvider();
-      else if (providerName === "facebook")
+      if (providerName === "google") {
+        provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: "select_account" });
+      } else if (providerName === "facebook") {
         provider = new FacebookAuthProvider();
+        provider.setCustomParameters({
+          prompt: "select_account",
+          display: "popup",
+        });
+      }
+      console.log(`Attempting ${providerName} signup...`);
+      const result = await signInWithPopup(auth, provider);
+      console.log(`${providerName} signup result:`, result);
 
-      const { user } = await signInWithPopup(auth, provider);
-      console.log("Social signup successful:", user.uid, providerName);
-
-      // Enhanced user document creation for social signups
+      const user = result.user;
       const userDocData = {
         firstName: user.displayName?.split(" ")[0] || "",
         lastName: user.displayName?.split(" ").slice(1).join(" ") || "",
         email: user.email || "",
-        phone: "", // Empty for social signups - user can update later
+        phone: "",
         createdAt: new Date(),
         updatedAt: new Date(),
         signupMethod: providerName,
@@ -221,18 +232,22 @@ const SignUp = () => {
         await setDoc(doc(db, "users", user.uid), userDocData);
         console.log("Social signup user document created:", userDocData);
       } catch (firestoreError) {
-        console.error(`${providerName} Firestore Error:`, firestoreError);
+        console.error(
+          `${providerName} Firestore Error:`,
+          firestoreError.code,
+          firestoreError.message
+        );
         if (firestoreError.code === "unavailable") {
           setApiError(
             "You are offline. User data will sync when you reconnect."
           );
         } else if (firestoreError.code === "permission-denied") {
           setApiError(
-            "Signed in successfully, but permissions error occurred. Please contact support."
+            "Signed up successfully, but permissions error occurred. Please contact support."
           );
         } else {
           setApiError(
-            "Signed in successfully, but some data may not be saved. Please update your profile."
+            "Signed up successfully, but some data may not be saved. Please update your profile."
           );
         }
       }
@@ -241,14 +256,7 @@ const SignUp = () => {
         state: { message: `${providerName} signup successful!` },
       });
     } catch (error) {
-      console.error(
-        `${providerName} Signup Error:`,
-        error,
-        "Code:",
-        error.code,
-        "Message:",
-        error.message
-      );
+      console.error(`${providerName} Signup Error:`, error.code, error.message);
       switch (error.code) {
         case "auth/popup-closed-by-user":
           setApiError("Sign-up was cancelled. Please try again.");
@@ -256,8 +264,24 @@ const SignUp = () => {
         case "auth/popup-blocked":
           setApiError("Popup was blocked. Please allow popups and try again.");
           break;
+        case "auth/account-exists-with-different-credential":
+          setApiError(
+            "An account already exists with this email but different credentials. Try signing in or linking accounts."
+          );
+          break;
         case "auth/network-request-failed":
           setApiError("Network error. Please check your connection.");
+          break;
+        case "auth/invalid-credential":
+          setApiError(
+            "Invalid credentials. Please check your provider settings."
+          );
+          break;
+        case "auth/too-many-requests":
+          setApiError("Too many attempts. Please try again later.");
+          break;
+        case "auth/cancelled-popup-request":
+          setApiError("Popup request was cancelled. Please try again.");
           break;
         default:
           setApiError(
@@ -497,7 +521,7 @@ const SignUp = () => {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !isOnline}
               className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-purple-700 hover:to-blue-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isLoading ? (
@@ -527,7 +551,7 @@ const SignUp = () => {
           <div className="space-y-3">
             <button
               onClick={() => handleSocialSignUp("google")}
-              disabled={isLoading}
+              disabled={isLoading || !isOnline}
               className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Chrome className="w-5 h-5 text-red-500 mr-3" />
@@ -538,7 +562,7 @@ const SignUp = () => {
 
             <button
               onClick={() => handleSocialSignUp("facebook")}
-              disabled={isLoading}
+              disabled={isLoading || !isOnline}
               className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Facebook className="w-5 h-5 text-blue-600 mr-3" />

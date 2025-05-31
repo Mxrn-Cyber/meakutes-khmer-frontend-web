@@ -1,12 +1,7 @@
-import { useState, useEffect } from "react";
-import Button from "../components/Button.jsx";
-import angkorWat from "../assets/angkor-wat.jpg";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import {
   Search,
   MapPin,
-  Star,
-  Heart,
   Clock,
   Users,
   Filter,
@@ -14,126 +9,29 @@ import {
   SortDesc,
 } from "lucide-react";
 import tripsData from "./data/tripsData.js";
-
-// Individual Trip Card Component
-function TripCard({ trip, onProvinceClick, isHighlighted }) {
-  const [isLiked, setIsLiked] = useState(false);
-
-  const renderStars = (rating) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        size={14}
-        className={`${
-          i < Math.floor(rating)
-            ? "text-yellow-400 fill-current"
-            : i < rating
-            ? "text-yellow-400 fill-current opacity-50"
-            : "text-gray-300"
-        }`}
-      />
-    ));
-  };
-
-  return (
-    <div
-      className={`group relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden ${
-        isHighlighted ? "ring-4 ring-blue-500 ring-opacity-50 scale-105" : ""
-      }`}
-    >
-      <div className="relative h-48 overflow-hidden">
-        <img
-          src={trip.image}
-          alt={trip.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-        <button
-          onClick={() => setIsLiked(!isLiked)}
-          className="absolute top-4 right-4 p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all duration-300"
-        >
-          <Heart
-            size={20}
-            className={`${
-              isLiked
-                ? "text-red-500 fill-current"
-                : "text-white hover:text-red-300"
-            } transition-colors duration-300`}
-          />
-        </button>
-        <button
-          onClick={() => onProvinceClick(trip.province)}
-          className="absolute top-4 left-4 bg-blue-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-semibold hover:bg-blue-700 transition-all duration-300 flex items-center gap-1"
-        >
-          <MapPin size={12} />
-          {trip.province}
-        </button>
-        <div className="absolute bottom-4 left-4 flex gap-2">
-          <div className="bg-white/90 backdrop-blur-sm text-gray-800 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-            <Clock size={12} />
-            {trip.duration}
-          </div>
-          <div className="bg-green-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
-            {trip.access}
-          </div>
-        </div>
-      </div>
-      <div className="p-5">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
-          {trip.name}
-        </h3>
-        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">
-          {trip.description}
-        </p>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              {renderStars(trip.rating)}
-            </div>
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">
-              {trip.rating}
-            </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              ({trip.reviews} reviews)
-            </span>
-          </div>
-          <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
-            <Users size={14} />
-            <span className="text-xs">{trip.accessibility}</span>
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-semibold text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">
-              Free Visit
-            </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              Best time: {trip.bestTime}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105 flex items-center gap-1">
-              <MapPin size={14} />
-              View Details
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
+import TripCard from "../components/TripCard.jsx";
+import About from "./About.jsx";
+import { Link } from "react-router-dom";
 function Home() {
+  // Debugging: Log tripsData to verify import
+  console.log("Imported tripsData:", tripsData);
+
   // Sample images for slideshow
   const slideImages = [
-    angkorWat,
-    "src/assets/angkor-morning.png",
-    "src/assets/palace.png",
-    "src/assets/monument.png",
-    "src/assets/people.png",
+    "/src/assets/angkor-morning.png",
+    "/src/assets/angkor-wat.jpg",
+    "/src/assets/monument.png",
+    "/src/assets/palace.png",
+    "/src/assets/profile-placeholder.jpg",
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [tripRatings, setTripRatings] = useState({});
+  const tripsPerPage = 8;
+
+  // Reference for the destinations section
+  const destinationsRef = useRef(null);
 
   // Auto-change slides every 10 seconds
   useEffect(() => {
@@ -159,34 +57,18 @@ function Home() {
     );
   };
 
+  // Scroll to destinations section
+  const scrollToDestinations = () => {
+    destinationsRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   // Provinces
   const provinces = [
     "All Provinces",
-    "Banteay Meanchey",
-    "Battambang",
-    "Kampong Cham",
-    "Kampong Chhnang",
-    "Kampong Speu",
-    "Kampong Thom",
-    "Kampot",
-    "Kandal",
-    "Kep",
-    "Koh Kong",
-    "Kratie",
-    "Mondulkiri",
-    "Oddar Meanchey",
-    "Pailin",
-    "Phnom Penh",
-    "Preah Vihear",
-    "Prey Veng",
-    "Pursat",
-    "Ratanakiri",
-    "Siem Reap",
-    "Preah Sihanouk",
-    "Stung Treng",
-    "Svay Rieng",
-    "Takeo",
-    "Tbong Khmum",
+    ...[...new Set(tripsData.map((trip) => trip.province))].sort(),
   ];
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -200,13 +82,29 @@ function Home() {
   const handleProvinceClick = (province) => {
     setSelectedProvince(province);
     setHighlightedProvince(province);
+    setCurrentPage(1); // Reset to first page on province change
     setTimeout(() => {
       setHighlightedProvince("");
     }, 3000);
   };
 
+  // Handle trip rating
+  const handleRateTrip = (tripId, rating) => {
+    setTripRatings((prev) => ({
+      ...prev,
+      [tripId]: rating,
+    }));
+    console.log(`Home: Rated trip ${tripId} with ${rating} stars`);
+  };
+
+  // Apply user ratings to trips
+  const tripsWithRatings = tripsData.map((trip) => ({
+    ...trip,
+    rating: tripRatings[trip.id] || trip.rating,
+  }));
+
   // Filter and sort trips
-  const filteredAndSortedTrips = tripsData
+  const filteredAndSortedTrips = tripsWithRatings
     .filter((trip) => {
       const matchesSearch =
         trip.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -248,8 +146,27 @@ function Home() {
         : -1;
     });
 
+  // Debugging: Log filtered and paginated data
+  console.log("Filtered and Sorted Trips:", filteredAndSortedTrips);
+  const totalPages = Math.ceil(filteredAndSortedTrips.length / tripsPerPage);
+  const paginatedTrips = filteredAndSortedTrips.slice(
+    (currentPage - 1) * tripsPerPage,
+    currentPage * tripsPerPage
+  );
+  console.log("Current Page:", currentPage, "Total Pages:", totalPages);
+  console.log("Paginated Trips:", paginatedTrips);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    destinationsRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   const toggleSortOrder = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    setCurrentPage(1); // Reset to first page on sort change
   };
 
   return (
@@ -270,6 +187,9 @@ function Home() {
                         ? "opacity-100 scale-100"
                         : "opacity-0 scale-105"
                     }`}
+                    onError={() =>
+                      console.error(`Failed to load slide image ${image}`)
+                    }
                   />
                 ))}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
@@ -361,13 +281,12 @@ function Home() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button
-                variant="primary"
-                onClick={() => alert("Start your journey!")}
-                className="px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+              <button
+                onClick={scrollToDestinations}
+                className="px-8 py-4 text-lg font-semibold bg-blue-600 text-white rounded-full shadow-lg hover:shadow-xl hover:bg-blue-700 transform hover:-translate-y-1 transition-all duration-300"
               >
                 Explore Now
-              </Button>
+              </button>
               <Link to="/about">
                 <button className="px-8 py-4 text-lg font-semibold text-gray-700 dark:text-gray-300 border-2 border-gray-300 dark:border-blue-600 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 hover:-translate-y-1 transition-all duration-300">
                   Learn More
@@ -379,7 +298,7 @@ function Home() {
       </section>
 
       {/* Top Destination Section */}
-      <section className="w-full px-4 pb-12">
+      <section ref={destinationsRef} className="w-full px-4 pb-12">
         <div className="text-center max-w-4xl mx-auto mb-12">
           <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 px-4 py-2 rounded-full text-sm font-semibold tracking-wide uppercase inline-block mb-4">
             Top Destination
@@ -470,14 +389,15 @@ function Home() {
 
         {/* Trip Cards Grid */}
         <div className="max-w-7xl mx-auto">
-          {filteredAndSortedTrips.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {filteredAndSortedTrips.map((trip) => (
+          {paginatedTrips.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {paginatedTrips.map((trip) => (
                 <TripCard
                   key={trip.id}
                   trip={trip}
                   onProvinceClick={handleProvinceClick}
                   isHighlighted={highlightedProvince === trip.province}
+                  onRateTrip={handleRateTrip}
                 />
               ))}
             </div>
@@ -497,6 +417,7 @@ function Home() {
                 onClick={() => {
                   setSearchTerm("");
                   setSelectedProvince("All Provinces");
+                  setCurrentPage(1);
                 }}
                 className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300"
               >
@@ -505,6 +426,39 @@ function Home() {
             </div>
           )}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-8 space-x-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handlePageChange(index + 1)}
+                className={`px-4 py-2 rounded-full ${
+                  currentPage === index + 1
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                } hover:bg-blue-500 hover:text-white transition-all duration-300`}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </section>
     </div>
   );

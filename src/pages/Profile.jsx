@@ -79,7 +79,8 @@ const Profile = () => {
     const fetchUserData = async () => {
       const unsubscribe = auth.onAuthStateChanged(async (user) => {
         if (!user) {
-          navigate("/profile");
+          // Navigate to login page instead of profile
+          navigate("/profile"); // or whatever your login route is
           return;
         }
 

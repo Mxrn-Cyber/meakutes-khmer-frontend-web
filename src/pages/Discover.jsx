@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Search, MapPin, Filter, SortAsc, SortDesc } from "lucide-react";
 import tripsData from "./data/tripsData.js";
 import TripCard from "../components/TripCard.jsx";
@@ -39,12 +39,17 @@ function Discover() {
   const [sortOrder, setSortOrder] = useState("desc");
   const [highlightedProvince, setHighlightedProvince] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [visibleTrips, setVisibleTrips] = useState(20);
+  const [currentPage, setCurrentPage] = useState(1);
   const [tripRatings, setTripRatings] = useState({});
+  const tripsPerPage = 24;
+
+  // Reference for the destinations section
+  const destinationsRef = useRef(null);
 
   const handleProvinceClick = (province) => {
     setSelectedProvince(province);
     setHighlightedProvince(province);
+    setCurrentPage(1); // Reset to first page on province change
     setTimeout(() => {
       setHighlightedProvince("");
     }, 3000);
@@ -104,8 +109,24 @@ function Discover() {
         : -1;
     });
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredAndSortedTrips.length / tripsPerPage);
+  const paginatedTrips = filteredAndSortedTrips.slice(
+    (currentPage - 1) * tripsPerPage,
+    currentPage * tripsPerPage
+  );
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    destinationsRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   const toggleSortOrder = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    setCurrentPage(1); // Reset to first page on sort change
   };
 
   return (
@@ -197,11 +218,11 @@ function Discover() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto">
-        {filteredAndSortedTrips.length > 0 ? (
+      <div className="max-w-7xl mx-auto" ref={destinationsRef}>
+        {paginatedTrips.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {filteredAndSortedTrips.slice(0, visibleTrips).map((trip) => (
+              {paginatedTrips.map((trip) => (
                 <TripCard
                   key={trip.id}
                   trip={trip}
@@ -211,13 +232,34 @@ function Discover() {
                 />
               ))}
             </div>
-            {visibleTrips < filteredAndSortedTrips.length && (
-              <div className="text-center mt-8">
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-8 space-x-2">
                 <button
-                  onClick={() => setVisibleTrips(visibleTrips + 20)}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Load More
+                  Previous
+                </button>
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => handlePageChange(index + 1)}
+                    className={`px-4 py-2 rounded-full ${
+                      currentPage === index + 1
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                    } hover:bg-blue-500 hover:text-white transition-all duration-300`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
                 </button>
               </div>
             )}
@@ -238,6 +280,7 @@ function Discover() {
               onClick={() => {
                 setSearchTerm("");
                 setSelectedProvince("All Provinces");
+                setCurrentPage(1);
               }}
               className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300"
             >
