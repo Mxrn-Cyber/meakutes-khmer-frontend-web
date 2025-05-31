@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "deploy": "wrangler deploy --assets=./dist",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -47,6 +48,7 @@
     "globals": "^16.0.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.8",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "wrangler": "^4.18.0"
   }
 }
