@@ -5,17 +5,17 @@ const teamMembers = [
   {
     name: "Seng Vannak",
     role: "Advisor",
-    photo: "src/assets/avatar.png",
+    photo: "/avatar.png",
   },
   {
     name: "Lao Thomorn",
     role: "Developer",
-    photo: "src/assets/avatar.png",
+    photo: "/avatar.png",
   },
   {
     name: "Ean Dara",
     role: "Developer",
-    photo: "src/assets/avatar.png",
+    photo: "/avatar.png",
   },
 ];
 
@@ -25,7 +25,7 @@ const AboutUs = () => {
       <div
         className="w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[800px] bg-cover bg-center flex items-start justify-start px-4 sm:px-6 md:px-10 pt-[20px] sm:pt-[30px] md:pt-[40px] rounded-[10px] mx-2 sm:mx-4"
         style={{
-          backgroundImage: "url('src/assets/Tumnail.png')",
+          backgroundImage: "url('/Tumnail.png')",
         }}
       >
         {/* <h1 className="text-white text-3xl md:text-5xl font-bold bg-black bg-opacity-40 p-15 rounded-lg text-buttom">
