@@ -5,6 +5,7 @@ import { Star, Heart, Clock, Users, MapPin } from "lucide-react";
 function TripCard({ trip, onProvinceClick, isHighlighted, onRateTrip }) {
   const [isLiked, setIsLiked] = useState(false);
   const [hoverRating, setHoverRating] = useState(null);
+  const [userRating, setUserRating] = useState(null); // Track user's rating
   const navigate = useNavigate();
 
   // Function to check if the trip is in favorites
@@ -18,9 +19,32 @@ function TripCard({ trip, onProvinceClick, isHighlighted, onRateTrip }) {
     setIsLiked(isFavourite);
   };
 
-  // Check if trip is in favorites on component mount
+  // Function to get user's rating from session storage
+  const getUserRating = () => {
+    const userRatings = JSON.parse(
+      sessionStorage.getItem("userRatings") || "{}"
+    );
+    return userRatings[trip.id] || null;
+  };
+
+  // Function to save user's rating to session storage
+  const saveUserRating = (rating) => {
+    const userRatings = JSON.parse(
+      sessionStorage.getItem("userRatings") || "{}"
+    );
+    userRatings[trip.id] = rating;
+    sessionStorage.setItem("userRatings", JSON.stringify(userRatings));
+    setUserRating(rating);
+    console.log(
+      `Saved rating ${rating} for trip ${trip.id} to session storage`
+    );
+  };
+
+  // Check if trip is in favorites and get user rating on component mount
   useEffect(() => {
     checkIsFavourite();
+    const savedRating = getUserRating();
+    setUserRating(savedRating);
   }, [trip.id]);
 
   // Listen for favorites update events
@@ -39,22 +63,33 @@ function TripCard({ trip, onProvinceClick, isHighlighted, onRateTrip }) {
   }, [trip.id]);
 
   const renderStars = (rating, interactive = false) => {
+    // Use user's rating if available, otherwise use trip's default rating
+    const displayRating = userRating !== null ? userRating : rating;
+
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
         size={14}
-        className={`cursor-pointer transition-colors duration-200 ${
-          i < Math.floor(hoverRating ?? rating)
+        className={`transition-colors duration-200 ${
+          interactive ? "cursor-pointer" : ""
+        } ${
+          i < Math.floor(hoverRating ?? displayRating)
             ? "text-yellow-400 fill-current"
-            : i < (hoverRating ?? rating)
+            : i < (hoverRating ?? displayRating)
             ? "text-yellow-400 fill-current opacity-50"
             : "text-gray-300"
         }`}
         onClick={
           interactive
-            ? () => {
-                onRateTrip(trip.id, i + 1);
-                console.log(`Rated trip ${trip.id} with ${i + 1} stars`);
+            ? (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const newRating = i + 1;
+                saveUserRating(newRating);
+                if (onRateTrip) {
+                  onRateTrip(trip.id, newRating);
+                }
+                console.log(`Rated trip ${trip.id} with ${newRating} stars`);
               }
             : undefined
         }
@@ -97,6 +132,17 @@ function TripCard({ trip, onProvinceClick, isHighlighted, onRateTrip }) {
 
     // Dispatch custom event to notify other components of changes
     window.dispatchEvent(new CustomEvent("favouritesUpdated"));
+  };
+
+  // Function to clear user rating (optional - for testing or reset functionality)
+  const clearUserRating = () => {
+    const userRatings = JSON.parse(
+      sessionStorage.getItem("userRatings") || "{}"
+    );
+    delete userRatings[trip.id];
+    sessionStorage.setItem("userRatings", JSON.stringify(userRatings));
+    setUserRating(null);
+    console.log(`Cleared rating for trip ${trip.id}`);
   };
 
   return (
@@ -157,7 +203,7 @@ function TripCard({ trip, onProvinceClick, isHighlighted, onRateTrip }) {
               {renderStars(trip.rating, true)}
             </div>
             <span className="text-sm font-medium text-gray-900 dark:text-white">
-              {trip.rating}
+              {userRating !== null ? userRating : trip.rating}
             </span>
             <span className="text-xs text-gray-500 dark:text-gray-400">
               ({trip.reviews} reviews)
@@ -172,13 +218,15 @@ function TripCard({ trip, onProvinceClick, isHighlighted, onRateTrip }) {
           <span className="text-xs text-gray-500 dark:text-gray-400">
             Best time: {trip.bestTime}
           </span>
-          <button
-            onClick={handleViewDetails}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-200 hover:shadow-md flex items-center gap-1"
-          >
-            <MapPin size={12} />
-            Details
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleViewDetails}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-200 hover:shadow-md flex items-center gap-1"
+            >
+              <MapPin size={12} />
+              Details
+            </button>
+          </div>
         </div>
       </div>
     </div>

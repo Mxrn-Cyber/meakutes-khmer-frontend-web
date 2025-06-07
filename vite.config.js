@@ -5,6 +5,9 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   resolve: {
+    extensions: [".js", ".jsx", ".ts", ".tsx"],
+  },
+  resolve: {
     alias: {
       "firebase/firestore": "firebase/firestore",
       "@": path.resolve(__dirname, "src"),

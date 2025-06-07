@@ -560,7 +560,7 @@ const SignUp = () => {
               </span>
             </button>
 
-            <button
+            {/* <button
               onClick={() => handleSocialSignUp("facebook")}
               disabled={isLoading || !isOnline}
               className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -569,7 +569,7 @@ const SignUp = () => {
               <span className="text-gray-700 dark:text-gray-300 font-semibold">
                 Sign up with Facebook
               </span>
-            </button>
+            </button> */}
           </div>
 
           <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-300">

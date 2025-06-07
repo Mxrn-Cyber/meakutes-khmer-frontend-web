@@ -3,7 +3,7 @@ import {
   MapPin,
   Phone,
   Mail,
-  Twitter,
+  Figma,
   Facebook,
   Youtube,
   Linkedin,
@@ -64,19 +64,20 @@ export default function Footer() {
                 <div className="flex items-start space-x-3 group hover:text-blue-400 transition-colors duration-300">
                   <MapPin className="w-5 h-5 mt-1 flex-shrink-0" />
                   <span className="text-gray-300 group-hover:text-white transition-colors duration-300">
-                    123 Street, New York, USA
+                    #219A, Second Floor, Building A, Russian Federation
+                    Boulevard, Teuk Laak 1, Toul Kork, Phnom Penh Cambodia
                   </span>
                 </div>
                 <div className="flex items-center space-x-3 group hover:text-blue-400 transition-colors duration-300">
                   <Phone className="w-5 h-5 flex-shrink-0" />
                   <span className="text-gray-300 group-hover:text-white transition-colors duration-300">
-                    +012 345 67890
+                    +855 96 696 0144
                   </span>
                 </div>
                 <div className="flex items-center space-x-3 group hover:text-blue-400 transition-colors duration-300">
                   <Mail className="w-5 h-5 flex-shrink-0" />
                   <span className="text-gray-300 group-hover:text-white transition-colors duration-300">
-                    info@example.com
+                    laothomorn@gmail.com
                   </span>
                 </div>
               </div>
@@ -84,10 +85,26 @@ export default function Footer() {
               {/* Social Links */}
               <div className="flex space-x-3 pt-4">
                 {[
-                  { Icon: Twitter, href: "/", color: "hover:bg-blue-500" },
-                  { Icon: Facebook, href: "/", color: "hover:bg-blue-600" },
-                  { Icon: Youtube, href: "/", color: "hover:bg-red-600" },
-                  { Icon: Linkedin, href: "/", color: "hover:bg-blue-700" },
+                  {
+                    Icon: Figma,
+                    href: "https://www.figma.com/@cybermorn",
+                    color: "hover:bg-blue-500",
+                  },
+                  {
+                    Icon: Facebook,
+                    href: "https://web.facebook.com/morn.scripter",
+                    color: "hover:bg-blue-600",
+                  },
+                  {
+                    Icon: Youtube,
+                    href: "https://www.tiktok.com/@cybermorn",
+                    color: "hover:bg-red-600",
+                  },
+                  {
+                    Icon: Linkedin,
+                    href: "https://www.linkedin.com/in/lao-thomorn-347a4b28b/",
+                    color: "hover:bg-blue-700",
+                  },
                 ].map(({ Icon, href, color }, index) => (
                   <a
                     key={index}

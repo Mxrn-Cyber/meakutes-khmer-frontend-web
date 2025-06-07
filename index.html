@@ -4,43 +4,50 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Meakutes Khmer</title>
-
-    <!-- ✅ Favicon -->
     <link rel="icon" href="/logo-ni.png" type="image/png" />
-
-    <!-- ✅ Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         darkMode: "class",
       };
     </script>
-
-    <!-- ✅ Global Styles (Optional) -->
+    <script>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            includedLanguages: "en,kh",
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false,
+          },
+          "google_translate_element"
+        );
+      }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <link href="/src/styles/global.css" rel="stylesheet" />
   </head>
-
   <body class="bg-white text-black dark:bg-gray-900 dark:text-white">
-    <!-- React App Mount Point -->
+    <div id="google_translate_element" style="display: none"></div>
     <div id="root">
-      <!-- Optional: Static fallback content before React loads -->
-      <header class="bg-white shadow-sm p-4">
+      <header class="bg-white shadow-sm p-4 dark:bg-gray-900">
         <div class="container mx-auto flex items-center">
-          <h1 class="text-xl font-semibold text-gray-800">Meakutes Khmer</h1>
+          <h1 class="text-xl font-semibold text-gray-800 dark:text-white">
+            Meakutes Khmer
+          </h1>
         </div>
       </header>
-
       <main class="container mx-auto p-4">
         <div class="text-center py-8">
-          <h2 class="text-2xl font-bold text-gray-700 mb-4">
+          <h2 class="text-2xl font-bold text-gray-700 dark:text-gray-200 mb-4">
             Welcome to Meakutes Khmer
           </h2>
-          <p class="text-gray-600">Finding your good trip in Cambodia here</p>
+          <p class="text-gray-600 dark:text-gray-400">
+            Finding your good trip in Cambodia here
+          </p>
         </div>
       </main>
     </div>
-
-    <!-- ✅ React Mount Script -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

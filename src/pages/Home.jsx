@@ -19,10 +19,12 @@ function Home() {
   // Sample images for slideshow
   const slideImages = [
     "/angkor-morning.png",
-    "/angkor-wat.jpg",
-    "/monument.png",
+    "/angkor-wat.png",
+    "/bayon-temple.png",
     "/palace.png",
-    "/profile-placeholder.jpg",
+    "/manument.png",
+    "/Landscape.png",
+    "/monk-front.png",
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -37,7 +39,7 @@ function Home() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slideImages.length);
-    }, 10000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [slideImages.length]);
@@ -262,22 +264,31 @@ function Home() {
             </h1>
             <div className="space-y-4 mb-8 text-gray-600 dark:text-gray-300">
               <p className="text-base lg:text-lg leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit ut
-                aliquam, purus sit amet luctus venenatis, lectus magna fringilla
-                urna, porttitor rhoncus dolor purus non enim praesent elementum
-                facilisis leo, vel fringilla est ullamcorper eget nulla facilisi
+                Meakutes-Khmer is a web application developed to promote tourism
+                in Cambodia, one of the oldest countries in Southeast Asia with
+                a rich cultural heritage. Cambodia boasts a variety of tourist
+                attractions, from historical resorts like the luxurious and
+                awe-inspiring temples built by Khmer ancestors to innovative
+                modern resorts, stunning mountain landscapes, diverse wildlife,
+                and some of the most beautiful beaches in Asia. These
+                attractions have the potential to draw both national and
+                international visitors. However, the COVID-19 pandemic caused a
+                significant decline in tourism, impacting local livelihoods.
               </p>
               <p className="text-base lg:text-lg leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit ut
-                aliquam, purus sit amet luctus venenatis, lectu magna fringilla
-                urna, porttitor rhoncus dolor purus non enim praesent elementum
-                facilisis leo, vel fringilla est ullamcorper eget nulla facilisi
+                To address this, we, the students of the Department of
+                Information Technology Engineering (8th generation) at Lao
+                Thomorn, under the guidance of our advisor, Ky Sok Lay, created
+                this final-year project. Meakutes-Khmer aims to promote new and
+                beautiful tourist sites across Cambodia, helping Cambodians and
+                foreign visitors discover these areas. By doing so, we hope to
+                benefit society, improve the livelihoods of people around these
+                tourist sites, and contribute to the recovery of Cambodia’s
+                tourism industry.
               </p>
               <p className="text-base lg:text-lg leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit ut
-                aliquam, purus sit amet luctus venenatis, lectu magna fringilla
-                urna, porttitor rhoncus dolor purus non enim praesent elementum
-                facilisis leo, vel fringilla est ullamcorper eget nulla facilisi
+                I hope this website is helpful to boost our tourist sector and
+                promote cambodia to the world.From ITE G8 Student
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -298,7 +309,7 @@ function Home() {
       </section>
 
       {/* Top Destination Section */}
-      <section ref={destinationsRef} className="w-full px-4 pb-12">
+      <section ref={destinationsRef} className="w-full px-2 pb-12">
         <div className="text-center max-w-4xl mx-auto mb-12">
           <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 px-4 py-2 rounded-full text-sm font-semibold tracking-wide uppercase inline-block mb-4">
             Top Destination
