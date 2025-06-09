@@ -35,7 +35,7 @@ const AboutUs = () => {
         <div className="flex flex-col lg:flex-row gap-6 md:gap-10 items-start">
           {/* Text Section */}
           <div className="flex-1">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4">About Us</h2>
+            <h2 className="text-xl sm:text-7xl font-bold mb-4">About Us</h2>
 
             <p className="mb-4 text-sm sm:text-base leading-relaxed">
               <strong>Meakutes-Khmer</strong> is a tourism promotion website
@@ -103,7 +103,7 @@ const AboutUs = () => {
           <div className="w-full sm:w-[200px] md:w-[260px] lg:w-[280px] xl:w-[400px] flex-shrink-0 mx-auto lg:mx-0">
             <div className="overflow-hidden rounded-xl shadow-lg">
               <img
-                src="/avatar.png"
+                src="/Trip-Image/about-team.png"
                 alt="Our Group"
                 className="w-full h-[400px] sm:h-[450px] md:h-[400px] lg:h-[450px] xl:h-[600px] object-cover transition-all duration-500 ease-in-out hover:scale-110 hover:rotate-2 hover:shadow-2xl hover:brightness-110"
               />

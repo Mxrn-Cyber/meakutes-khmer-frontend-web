@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:analyze": "vite build && npx vite-bundle-analyzer dist/stats.html",
     "deploy": "wrangler deploy --assets=./dist",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -52,6 +53,7 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.8",
     "vite": "^6.3.5",
+    "vite-bundle-analyzer": "^0.22.1",
     "wrangler": "^4.18.0"
   }
 }

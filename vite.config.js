@@ -2,26 +2,68 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+
 export default defineConfig({
   plugins: [react()],
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"],
-  },
-  resolve: {
     alias: {
       "firebase/firestore": "firebase/firestore",
       "@": path.resolve(__dirname, "src"),
-      assetsInclude: ["**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.svg"],
-      server: {
-        host: true, // Allows access from the local network
-        port: 5173, // Default port; change if needed
-        strictPort: true, // Exit if the port is already in use
-        open: true, // Automatically open the app in the browser
-        hmr: {
-          // Configure HMR settings if needed
-          overlay: true, // Show overlay for errors
+    },
+  },
+  assetsInclude: ["**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.svg"],
+  server: {
+    host: true,
+    port: 5173,
+    strictPort: true,
+    open: true,
+    hmr: {
+      overlay: true,
+    },
+    cors: true,
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // React core
+          "react-vendor": ["react", "react-dom"],
+
+          // Router
+          router: ["react-router-dom"],
+
+          // Firebase
+          firebase: ["firebase/app", "firebase/auth", "firebase/firestore"],
+
+          // UI/Styling libraries (adjust based on your actual dependencies)
+          "ui-libs": ["tailwindcss"].filter((lib) => {
+            try {
+              require.resolve(lib);
+              return true;
+            } catch {
+              return false;
+            }
+          }),
+
+          // Utility libraries
+          utils: ["lodash", "date-fns", "axios"].filter((lib) => {
+            try {
+              require.resolve(lib);
+              return true;
+            } catch {
+              return false;
+            }
+          }),
         },
-        cors: true, // Enable CORS if required
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
       },
     },
   },
