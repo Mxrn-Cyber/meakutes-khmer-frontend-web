@@ -1,0 +1,1 @@
+import{j as e}from"./trip-components-CFAaFKI4.js";import"./react-vendor-BQK9_sJn.js";import"./router-CDJVE5pb.js";const r=()=>e.jsxs("div",{className:"container mx-auto px-4 py-8",children:[e.jsx("h1",{className:"text-3xl font-bold",children:"Terms of Service"}),e.jsx("p",{className:"mt-4",children:"Your Terms of Service content goes here."})]});export{r as default};

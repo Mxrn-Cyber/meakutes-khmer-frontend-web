@@ -29,7 +29,10 @@ export default defineConfig({
         manualChunks: {
           // React core
           "react-vendor": ["react", "react-dom"],
-
+          "trip-components": [
+            "./src/components/TripCard.jsx",
+            "./src/context/TripContext.jsx",
+          ],
           // Router
           router: ["react-router-dom"],
 

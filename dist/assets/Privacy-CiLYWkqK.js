@@ -1,0 +1,1 @@
+import{j as o}from"./trip-components-CFAaFKI4.js";import"./react-vendor-BQK9_sJn.js";import"./router-CDJVE5pb.js";const e=()=>o.jsxs("div",{className:"container mx-auto px-4 py-8",children:[o.jsx("h1",{className:"text-3xl font-bold",children:"Privacy Policy"}),o.jsx("p",{className:"mt-4",children:"Your Privacy Policy content goes here."})]});export{e as default};
