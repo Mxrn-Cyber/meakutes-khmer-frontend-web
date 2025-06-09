@@ -109,61 +109,7 @@ function TripDetail() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 px-4 md:px-8 py-12">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
-        {/* Left: Trip Info */}
-        <div className="space-y-6">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-            {trip.name}
-          </h1>
-          <div className="flex items-center gap-2">
-            {renderStars(trip.rating)}
-            <span className="text-gray-600 dark:text-gray-300 ml-2 text-lg">
-              {trip.rating}/5 ({trip.reviews} Reviews)
-            </span>
-          </div>
-          <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-            {trip.description || "No description available."}
-          </p>
-          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-lg">
-            <MapPin size={20} className="text-blue-500" />
-            {trip.province}, Cambodia
-          </div>
-
-          {/* Additional Trip Details */}
-          <div className="grid grid-cols-2 gap-4 mt-6">
-            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
-                Duration
-              </h4>
-              <p className="text-gray-600 dark:text-gray-300">
-                {trip.duration}
-              </p>
-            </div>
-            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
-                Access
-              </h4>
-              <p className="text-gray-600 dark:text-gray-300">{trip.access}</p>
-            </div>
-            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
-                Best Time
-              </h4>
-              <p className="text-gray-600 dark:text-gray-300">
-                {trip.bestTime}
-              </p>
-            </div>
-            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
-                Accessibility
-              </h4>
-              <p className="text-gray-600 dark:text-gray-300">
-                {trip.accessibility}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Right: Images and Map */}
+        {/* Left: Images and Map */}
         <div className="space-y-6">
           <div className="relative h-[400px] rounded-3xl overflow-hidden shadow-xl">
             <img
@@ -280,6 +226,60 @@ function TripDetail() {
                 <MapPin size={16} />
                 Open in Google Maps
               </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Trip Info */}
+        <div className="space-y-6">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+            {trip.name}
+          </h1>
+          <div className="flex items-center gap-2">
+            {renderStars(trip.rating)}
+            <span className="text-gray-600 dark:text-gray-300 ml-2 text-lg">
+              {trip.rating}/5 ({trip.reviews} Reviews)
+            </span>
+          </div>
+          <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+            {trip.description || "No description available."}
+          </p>
+          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-lg">
+            <MapPin size={20} className="text-blue-500" />
+            {trip.province}, Cambodia
+          </div>
+
+          {/* Additional Trip Details */}
+          <div className="grid grid-cols-2 gap-4 mt-6">
+            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                Duration
+              </h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                {trip.duration}
+              </p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                Access
+              </h4>
+              <p className="text-gray-600 dark:text-gray-300">{trip.access}</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                Best Time
+              </h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                {trip.bestTime}
+              </p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                Accessibility
+              </h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                {trip.accessibility}
+              </p>
             </div>
           </div>
         </div>

@@ -1,7 +1,4 @@
-// src/firebase.js
-
 import { initializeApp } from "firebase/app";
-
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -18,18 +15,22 @@ import {
   reauthenticateWithCredential,
   signOut,
 } from "firebase/auth";
-
 import {
   getFirestore,
   doc,
   setDoc,
   getDoc,
   updateDoc,
+  onSnapshot,
+  deleteDoc,
+  collection,
+  query,
+  where,
+  getDocs,
 } from "firebase/firestore";
-
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-// 🔐 Your Firebase config from .env file
+// Firebase config from .env
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -39,15 +40,15 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_APP_ID,
 };
 
-// 🔥 Initialize Firebase
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// 🔐 Firebase services
+// Firebase services
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// 🌟 Export everything needed
+// Export services
 export {
   auth,
   db,
@@ -55,6 +56,12 @@ export {
   setDoc,
   getDoc,
   updateDoc,
+  onSnapshot,
+  deleteDoc,
+  collection,
+  query,
+  where,
+  getDocs,
   storage,
   ref,
   uploadBytes,
