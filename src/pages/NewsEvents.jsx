@@ -1,13 +1,12 @@
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
-import { newsEvents } from "/src/pages/data/newsEvents.js";
+import { newsEvents } from "./data/newsEvents";
 
 function NewsEvents() {
   const currentDate = new Date();
   const navigate = useNavigate();
 
-  // Helper to parse event date strings (e.g., "March 1 - March 5", or "March 10")
   const isEventHappeningNow = (eventDate) => {
     try {
       const [startDateStr, endDateStr] = eventDate.includes("-")
@@ -30,21 +29,18 @@ function NewsEvents() {
           December: 11,
         };
         const parts = str.trim().replace(",", "").split(" ");
-        if (parts.length < 2) return new Date("Invalid");
         const [month, day, year = "2025"] = parts;
         return new Date(+year, months[month], +day);
       };
 
       const start = parseDate(startDateStr);
-      const end = new Date(parseDate(endDateStr).setHours(23, 59, 59)); // End of day
-
+      const end = new Date(parseDate(endDateStr).setHours(23, 59, 59));
       return currentDate >= start && currentDate <= end;
     } catch {
       return false;
     }
   };
 
-  // Sort events: currently happening first, then by id
   const sortedEvents = useMemo(() => {
     return [...newsEvents].sort((a, b) => {
       const aNow = isEventHappeningNow(a.date) ? -1 : 1;

@@ -1,0 +1,143 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8f9fa"/>
+  
+  <!-- System Boundary -->
+  <rect x="200" y="80" width="800" height="640" fill="none" stroke="#2c3e50" stroke-width="2" rx="10"/>
+  <text x="600" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2c3e50">Meakutes-Khmer News App</text>
+  
+  <!-- Actors -->
+  <!-- Guest -->
+  <circle cx="100" cy="150" r="20" fill="#34495e"/>
+  <rect x="85" y="170" width="30" height="40" fill="#34495e" rx="5"/>
+  <rect x="75" y="210" width="15" height="30" fill="#34495e" rx="5"/>
+  <rect x="110" y="210" width="15" height="30" fill="#34495e" rx="5"/>
+  <text x="100" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2c3e50">Guest</text>
+  
+  <!-- Registered User -->
+  <circle cx="100" cy="400" r="20" fill="#27ae60"/>
+  <rect x="85" y="420" width="30" height="40" fill="#27ae60" rx="5"/>
+  <rect x="75" y="460" width="15" height="30" fill="#27ae60" rx="5"/>
+  <rect x="110" y="460" width="15" height="30" fill="#27ae60" rx="5"/>
+  <text x="100" y="510" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2c3e50">Registered User</text>
+  
+  <!-- Admin -->
+  <circle cx="1100" cy="400" r="20" fill="#e74c3c"/>
+  <rect x="1085" y="420" width="30" height="40" fill="#e74c3c" rx="5"/>
+  <rect x="1075" y="460" width="15" height="30" fill="#e74c3c" rx="5"/>
+  <rect x="1110" y="460" width="15" height="30" fill="#e74c3c" rx="5"/>
+  <text x="1100" y="510" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2c3e50">Admin</text>
+  
+  <!-- Use Cases for Guest (Public Features) -->
+  <ellipse cx="350" cy="150" rx="80" ry="30" fill="#ecf0f1" stroke="#34495e" stroke-width="2"/>
+  <text x="350" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Browse News</text>
+  
+  <ellipse cx="350" cy="200" rx="80" ry="30" fill="#ecf0f1" stroke="#34495e" stroke-width="2"/>
+  <text x="350" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Search Content</text>
+  
+  <ellipse cx="350" cy="250" rx="80" ry="30" fill="#ecf0f1" stroke="#34495e" stroke-width="2"/>
+  <text x="350" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">View News Details</text>
+  
+  <ellipse cx="350" cy="300" rx="80" ry="30" fill="#ecf0f1" stroke="#34495e" stroke-width="2"/>
+  <text x="350" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Toggle Dark Mode</text>
+  
+  <!-- Authentication Use Cases -->
+  <ellipse cx="500" cy="180" rx="60" ry="25" fill="#e8f4f8" stroke="#3498db" stroke-width="2"/>
+  <text x="500" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Login</text>
+  
+  <ellipse cx="500" cy="220" rx="60" ry="25" fill="#e8f4f8" stroke="#3498db" stroke-width="2"/>
+  <text x="500" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Sign Up</text>
+  
+  <ellipse cx="500" cy="260" rx="60" ry="25" fill="#e8f4f8" stroke="#3498db" stroke-width="2"/>
+  <text x="500" y="265" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Logout</text>
+  
+  <!-- User Features -->
+  <ellipse cx="350" cy="400" rx="70" ry="25" fill="#e8f6f0" stroke="#27ae60" stroke-width="2"/>
+  <text x="350" y="405" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Create Post</text>
+  
+  <ellipse cx="350" cy="450" rx="70" ry="25" fill="#e8f6f0" stroke="#27ae60" stroke-width="2"/>
+  <text x="350" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Manage Favorites</text>
+  
+  <ellipse cx="500" cy="400" rx="70" ry="25" fill="#e8f6f0" stroke="#27ae60" stroke-width="2"/>
+  <text x="500" y="405" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">View Profile</text>
+  
+  <ellipse cx="500" cy="450" rx="70" ry="25" fill="#e8f6f0" stroke="#27ae60" stroke-width="2"/>
+  <text x="500" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Edit Profile</text>
+  
+  <!-- Content Management -->
+  <ellipse cx="650" cy="300" rx="70" ry="25" fill="#fdf2e9" stroke="#e67e22" stroke-width="2"/>
+  <text x="650" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Add News</text>
+  
+  <ellipse cx="650" cy="350" rx="70" ry="25" fill="#fdf2e9" stroke="#e67e22" stroke-width="2"/>
+  <text x="650" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Edit News</text>
+  
+  <ellipse cx="650" cy="400" rx="70" ry="25" fill="#fdf2e9" stroke="#e67e22" stroke-width="2"/>
+  <text x="650" y="405" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Delete News</text>
+  
+  <!-- Admin Features -->
+  <ellipse cx="850" cy="250" rx="70" ry="25" fill="#fadbd8" stroke="#e74c3c" stroke-width="2"/>
+  <text x="850" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Manage Users</text>
+  
+  <ellipse cx="850" cy="300" rx="70" ry="25" fill="#fadbd8" stroke="#e74c3c" stroke-width="2"/>
+  <text x="850" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Manage Trips</text>
+  
+  <ellipse cx="850" cy="350" rx="70" ry="25" fill="#fadbd8" stroke="#e74c3c" stroke-width="2"/>
+  <text x="850" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">View Analytics</text>
+  
+  <ellipse cx="850" cy="400" rx="80" ry="25" fill="#fadbd8" stroke="#e74c3c" stroke-width="2"/>
+  <text x="850" y="405" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Access Dashboard</text>
+  
+  <ellipse cx="850" cy="450" rx="80" ry="25" fill="#fadbd8" stroke="#e74c3c" stroke-width="2"/>
+  <text x="850" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Moderate Content</text>
+  
+  <!-- Connections from Guest -->
+  <line x1="120" y1="150" x2="270" y2="150" stroke="#34495e" stroke-width="2"/>
+  <line x1="120" y1="160" x2="270" y2="200" stroke="#34495e" stroke-width="2"/>
+  <line x1="120" y1="170" x2="270" y2="250" stroke="#34495e" stroke-width="2"/>
+  <line x1="120" y1="180" x2="270" y2="300" stroke="#34495e" stroke-width="2"/>
+  
+  <!-- Connections from Guest to Authentication -->
+  <line x1="120" y1="170" x2="440" y2="180" stroke="#34495e" stroke-width="2"/>
+  <line x1="120" y1="175" x2="440" y2="220" stroke="#34495e" stroke-width="2"/>
+  
+  <!-- Connections from Registered User -->
+  <line x1="120" y1="400" x2="280" y2="400" stroke="#27ae60" stroke-width="2"/>
+  <line x1="120" y1="410" x2="280" y2="450" stroke="#27ae60" stroke-width="2"/>
+  <line x1="120" y1="390" x2="430" y2="400" stroke="#27ae60" stroke-width="2"/>
+  <line x1="120" y1="420" x2="430" y2="450" stroke="#27ae60" stroke-width="2"/>
+  
+  <!-- Registered User can also access Guest features -->
+  <line x1="120" y1="380" x2="270" y2="150" stroke="#27ae60" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="120" y1="385" x2="270" y2="200" stroke="#27ae60" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="120" y1="390" x2="270" y2="250" stroke="#27ae60" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="120" y1="395" x2="270" y2="300" stroke="#27ae60" stroke-width="1" stroke-dasharray="5,5"/>
+  
+  <!-- Registered User to Logout -->
+  <line x1="120" y1="370" x2="440" y2="260" stroke="#27ae60" stroke-width="2"/>
+  
+  <!-- Admin connections -->
+  <line x1="1080" y1="380" x2="920" y2="250" stroke="#e74c3c" stroke-width="2"/>
+  <line x1="1080" y1="390" x2="920" y2="300" stroke="#e74c3c" stroke-width="2"/>
+  <line x1="1080" y1="400" x2="920" y2="350" stroke="#e74c3c" stroke-width="2"/>
+  <line x1="1080" y1="410" x2="930" y2="400" stroke="#e74c3c" stroke-width="2"/>
+  <line x1="1080" y1="420" x2="930" y2="450" stroke="#e74c3c" stroke-width="2"/>
+  
+  <!-- Admin can access content management -->
+  <line x1="1080" y1="370" x2="720" y2="300" stroke="#e74c3c" stroke-width="2"/>
+  <line x1="1080" y1="380" x2="720" y2="350" stroke="#e74c3c" stroke-width="2"/>
+  <line x1="1080" y1="390" x2="720" y2="400" stroke="#e74c3c" stroke-width="2"/>
+  
+  <!-- Admin inherits user capabilities (dashed lines) -->
+  <line x1="1080" y1="350" x2="580" y2="300" stroke="#e74c3c" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="1080" y1="360" x2="580" y2="350" stroke="#e74c3c" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="1080" y1="370" x2="580" y2="400" stroke="#e74c3c" stroke-width="1" stroke-dasharray="5,5"/>
+  
+  <!-- Include relationships -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7f8c8d"/>
+    </marker>
+  </defs>
+  
+  <!-- Simple Legend -->
+  

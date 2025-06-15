@@ -90,3 +90,17 @@ button:focus-visible {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+/* index.css */
+@keyframes dropdown-open {
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+.animate-dropdown {
+  transform-origin: top center;
+}
