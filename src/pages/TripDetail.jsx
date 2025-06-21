@@ -34,12 +34,24 @@ const mapOptions = {
 // Singleton to track if LoadScript has been mounted
 let isGoogleApiLoaded = false;
 
+// Helper function to shuffle array and get random items
+const getRandomTrips = (trips, excludeId, count = 3) => {
+  const filteredTrips = trips.filter((t) => t.id.toString() !== excludeId);
+  const shuffled = [...filteredTrips].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+};
+
 function TripDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const trip = tripsData.find((trip) => trip.id.toString() === id);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [shouldLoadScript, setShouldLoadScript] = useState(!isGoogleApiLoaded);
+
+  // Memoize random trips to avoid re-shuffling on every render
+  const randomTrips = useMemo(() => {
+    return getRandomTrips(tripsData, id, 3);
+  }, [id]);
 
   useEffect(() => {
     if (!isGoogleApiLoaded && shouldLoadScript) {
@@ -291,39 +303,36 @@ function TripDetail() {
           Other Trips You May Like
         </h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {tripsData
-            .filter((t) => t.id.toString() !== id)
-            .slice(0, 3)
-            .map((otherTrip) => (
-              <div
-                key={otherTrip.id}
-                onClick={() => navigate(`/trip/${otherTrip.id}`)}
-                className="cursor-pointer bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300"
-              >
-                <div className="relative h-44">
-                  <img
-                    src={otherTrip.image}
-                    alt={otherTrip.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <span className="absolute top-2 right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-full shadow-md">
-                    {otherTrip.province}
-                  </span>
-                </div>
-                <div className="p-4 space-y-1">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
-                    {otherTrip.name}
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                    {otherTrip.description || "No description available."}
-                  </p>
-                  <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-300 pt-2">
-                    {renderStars(otherTrip.rating)}
-                    <span className="ml-1">{otherTrip.rating}/5</span>
-                  </div>
+          {randomTrips.map((otherTrip) => (
+            <div
+              key={otherTrip.id}
+              onClick={() => navigate(`/trip/${otherTrip.id}`)}
+              className="cursor-pointer bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300"
+            >
+              <div className="relative h-44">
+                <img
+                  src={otherTrip.image}
+                  alt={otherTrip.name}
+                  className="w-full h-full object-cover"
+                />
+                <span className="absolute top-2 right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-full shadow-md">
+                  {otherTrip.province}
+                </span>
+              </div>
+              <div className="p-4 space-y-1">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
+                  {otherTrip.name}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                  {otherTrip.description || "No description available."}
+                </p>
+                <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-300 pt-2">
+                  {renderStars(otherTrip.rating)}
+                  <span className="ml-1">{otherTrip.rating}/5</span>
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
         </div>
       </div>
     </div>

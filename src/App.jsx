@@ -36,6 +36,7 @@ function App() {
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
         {isLoading && <Loading />}
         <Navbar />
+        <main className="pt-16"></main>
         <Translator />
         <main className="container mx-auto px-4 py-8">
           <Routes>

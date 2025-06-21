@@ -120,13 +120,13 @@ function Article() {
       switch (type) {
         case "google":
           return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDateFormatted}/${endDateFormatted}&details=${description}&location=${location}&sf=true&output=xml`;
-        case "outlook":
-          return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${title}&startdt=${startDateFormatted}&enddt=${endDateFormatted}&body=${description}&location=${location}`;
-        case "office365":
-          return `https://outlook.office.com/calendar/0/deeplink/compose?subject=${title}&startdt=${startDateFormatted}&enddt=${endDateFormatted}&body=${description}&location=${location}`;
-        case "yahoo":
-          const yahooStart = startDateFormatted.replace(/[TZ]/g, "");
-          return `https://calendar.yahoo.com/?v=60&view=d&type=20&title=${title}&st=${yahooStart}&dur=0200&desc=${description}&in_loc=${location}`;
+        // case "outlook":
+        //   return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${title}&startdt=${startDateFormatted}&enddt=${endDateFormatted}&body=${description}&location=${location}`;
+        // case "office365":
+        //   return `https://outlook.office.com/calendar/0/deeplink/compose?subject=${title}&startdt=${startDateFormatted}&enddt=${endDateFormatted}&body=${description}&location=${location}`;
+        // case "yahoo":
+        //   const yahooStart = startDateFormatted.replace(/[TZ]/g, "");
+        //   return `https://calendar.yahoo.com/?v=60&view=d&type=20&title=${title}&st=${yahooStart}&dur=0200&desc=${description}&in_loc=${location}`;
         case "ics":
           return generateICSFile(
             { title, description, location },
@@ -403,24 +403,24 @@ function Article() {
                             label: "Google Calendar",
                             icon: "📅",
                           },
-                          {
-                            type: "outlook",
-                            label: "Outlook Calendar",
-                            icon: "📧",
-                          },
-                          {
-                            type: "office365",
-                            label: "Office 365",
-                            icon: "🏢",
-                          },
-                          {
-                            type: "yahoo",
-                            label: "Yahoo Calendar",
-                            icon: "🟣",
-                          },
+                          // {
+                          //   type: "outlook",
+                          //   label: "Outlook Calendar",
+                          //   icon: "📧",
+                          // },
+                          // {
+                          //   type: "office365",
+                          //   label: "Office 365",
+                          //   icon: "🏢",
+                          // },
+                          // {
+                          //   type: "yahoo",
+                          //   label: "Yahoo Calendar",
+                          //   icon: "🟣",
+                          // },
                           {
                             type: "ics",
-                            label: "Download ICS File",
+                            label: "Download",
                             icon: "💾",
                             note: "For Apple Calendar, Thunderbird, etc.",
                           },

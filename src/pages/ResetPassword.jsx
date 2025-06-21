@@ -1,7 +1,6 @@
-// src/pages/ResetPassword.jsx
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { Lock, Eye, EyeOff, CheckCircle } from "lucide-react"; // Added CheckCircle
 import { auth, confirmPasswordReset } from "../firebase";
 
 const ResetPassword = () => {
@@ -22,7 +21,7 @@ const ResetPassword = () => {
   useEffect(() => {
     if (!oobCode) {
       setApiError(
-        "Invalid or missing reset code. Please use the link from your email."
+        "Invalid or missing reset code. Please use the link from your email or request a new one."
       );
     }
   }, [oobCode]);
@@ -79,17 +78,32 @@ const ResetPassword = () => {
     try {
       await confirmPasswordReset(auth, oobCode, formData.password);
       setSuccessMessage(
-        "Password updated successfully! Redirecting to login..."
+        "Password updated successfully! You will be redirected to the login page in a moment..."
       );
       setTimeout(() => {
         navigate("/login", {
           state: { message: "Password reset successful. Please sign in." },
         });
-      }, 2000);
+      }, 4000); // Increased to 4 seconds for better visibility
     } catch (error) {
-      setApiError(
-        error.message || "Failed to reset password. Please try again."
-      );
+      let errorMessage = "Failed to reset password. Please try again.";
+      switch (error.code) {
+        case "auth/invalid-action-code":
+          errorMessage =
+            "Invalid or expired reset code. Please request a new reset link.";
+          break;
+        case "auth/expired-action-code":
+          errorMessage =
+            "The reset link has expired. Please request a new one.";
+          break;
+        case "auth/weak-password":
+          errorMessage =
+            "The new password is too weak. Please choose a stronger password.";
+          break;
+        default:
+          errorMessage = error.message || errorMessage;
+      }
+      setApiError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -109,18 +123,26 @@ const ResetPassword = () => {
 
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
           {apiError && (
-            <p className="mb-4 text-sm text-red-600 dark:text-red-400">
-              {apiError}
-            </p>
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg">
+              <p className="text-sm text-red-600 dark:text-red-400">
+                {apiError}
+              </p>
+            </div>
           )}
           {successMessage && (
-            <p className="mb-4 text-sm text-green-600 dark:text-green-400">
-              {successMessage}
-            </p>
+            <div className="mb-4 p-3 bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg flex items-center">
+              <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
+              <p className="text-sm text-green-600 dark:text-green-400">
+                {successMessage}
+              </p>
+            </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                class
+                livescript="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 New Password
               </label>
               <div className="relative">
@@ -134,11 +156,13 @@ const ResetPassword = () => {
                     errors.password ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter new password"
+                  disabled={isLoading || successMessage}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  disabled={isLoading || successMessage}
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -171,11 +195,13 @@ const ResetPassword = () => {
                       : "border-gray-300"
                   }`}
                   placeholder="Confirm new password"
+                  disabled={isLoading || successMessage}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  disabled={isLoading || successMessage}
                 >
                   {showConfirmPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -193,7 +219,7 @@ const ResetPassword = () => {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || successMessage}
               className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
@@ -206,6 +232,16 @@ const ResetPassword = () => {
               )}
             </button>
           </form>
+          {!successMessage && (
+            <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+              <a
+                href="/forgot-password"
+                className="text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                Request a new reset link
+              </a>
+            </p>
+          )}
         </div>
       </div>
     </div>

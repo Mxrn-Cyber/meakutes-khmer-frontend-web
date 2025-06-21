@@ -17,10 +17,19 @@ import {
   Heart,
 } from "lucide-react";
 import { auth } from "../firebase";
+import logo from "/logo.png"; // Adjust path as needed
 
-// Import the logo image (adjust the path based on your project structure)
-// Example: If logo.png is in the src/assets folder
-import logo from "/logo.png"; // Replace with your actual path
+// Custom throttle function to limit scroll event frequency
+const throttle = (func, limit) => {
+  let inThrottle;
+  return (...args) => {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
+};
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,9 +53,9 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = throttle(() => {
       setScrolled(window.scrollY > 20);
-    };
+    }, 100); // Throttle to 100ms
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -142,7 +151,6 @@ const Navbar = () => {
     );
     localStorage.setItem("favouriteTrips", JSON.stringify(updatedFavourites));
     setFavouriteTrips(updatedFavourites);
-    // Dispatch custom event to notify other components of changes
     window.dispatchEvent(new CustomEvent("favouritesUpdated"));
   };
 
@@ -150,8 +158,8 @@ const Navbar = () => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-gray/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-lg border-b border-gray-200/20 dark:border-gray-700/20"
-          : "bg-transparent"
+          ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-md border-b border-gray-200/30 dark:border-gray-700/30"
+          : "bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -161,7 +169,7 @@ const Navbar = () => {
             <Link to="/" className="flex items-center group">
               <span className="flex items-center space-x-2 group-hover:scale-105 transition-transform duration-200">
                 <img
-                  src={logo} // Use the imported logo variable
+                  src={logo}
                   alt="Meakutes Khmer Logo"
                   className="h-10 w-auto"
                   onError={(e) => {

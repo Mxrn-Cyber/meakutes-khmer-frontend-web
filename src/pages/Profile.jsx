@@ -12,7 +12,7 @@ import {
   uploadBytes,
   getDownloadURL,
   updateProfile,
-  updateEmail,
+  verifyBeforeUpdateEmail, // Updated import
   updatePassword,
   reauthenticateWithCredential,
   EmailAuthProvider,
@@ -51,7 +51,6 @@ const Profile = () => {
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
@@ -63,6 +62,11 @@ const Profile = () => {
     new: false,
     confirm: false,
   });
+  // New state for re-authentication
+  const [showReauthForm, setShowReauthForm] = useState(false);
+  const [reauthPassword, setReauthPassword] = useState("");
+  const [reauthError, setReauthError] = useState("");
+  const [pendingEmail, setPendingEmail] = useState(""); // Store email pending verification
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -79,8 +83,7 @@ const Profile = () => {
     const fetchUserData = async () => {
       const unsubscribe = auth.onAuthStateChanged(async (user) => {
         if (!user) {
-          // Navigate to login page instead of profile
-          navigate("/profile"); // or whatever your login route is
+          navigate("/login"); // Redirect to login if not authenticated
           return;
         }
 
@@ -144,6 +147,9 @@ const Profile = () => {
       setEditMode(false);
       setApiError("");
       setSuccessMessage("");
+      setShowReauthForm(false);
+      setReauthPassword("");
+      setReauthError("");
     } else {
       setEditData({ ...userData });
       setEditMode(true);
@@ -169,6 +175,40 @@ const Profile = () => {
     if (editData.phone && !/^[\d\s\-\+\(\)]+$/.test(editData.phone))
       errors.push("Please enter a valid phone number");
     return errors;
+  };
+
+  const handleReauthenticate = async () => {
+    if (!auth.currentUser) {
+      setReauthError("You must be logged in.");
+      return false;
+    }
+    if (!reauthPassword) {
+      setReauthError("Please enter your current password.");
+      return false;
+    }
+    setIsUpdating(true);
+    setReauthError("");
+    try {
+      const credential = EmailAuthProvider.credential(
+        auth.currentUser.email,
+        reauthPassword
+      );
+      await reauthenticateWithCredential(auth.currentUser, credential);
+      return true;
+    } catch (error) {
+      let errorMessage = "Re-authentication failed.";
+      if (error.code === "auth/wrong-password") {
+        errorMessage = "Incorrect password. Please try again.";
+      } else if (error.code === "auth/too-many-requests") {
+        errorMessage = "Too many attempts. Please try again later.";
+      } else {
+        errorMessage = error.message || errorMessage;
+      }
+      setReauthError(errorMessage);
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const handleSaveProfile = async () => {
@@ -200,19 +240,36 @@ const Profile = () => {
       await setDoc(userDocRef, firestoreData, { merge: true });
       const displayName = `${editData.firstName.trim()} ${editData.lastName.trim()}`;
       await updateProfile(auth.currentUser, { displayName });
-      if (editData.email !== userData.email)
-        await updateEmail(auth.currentUser, editData.email);
-      const updatedUserData = { ...editData, displayName };
-      setUserData(updatedUserData);
+
+      if (editData.email !== userData.email) {
+        try {
+          await verifyBeforeUpdateEmail(auth.currentUser, editData.email);
+          setSuccessMessage(
+            `Profile updated! A verification email has been sent to ${editData.email}. Please verify to update your email.`
+          );
+          setPendingEmail(editData.email); // Store pending email
+        } catch (error) {
+          if (error.code === "auth/requires-recent-login") {
+            setShowReauthForm(true);
+            setIsUpdating(false);
+            return;
+          } else if (error.code === "auth/email-already-in-use") {
+            throw new Error("This email is already in use by another account.");
+          } else if (error.code === "auth/invalid-email") {
+            throw new Error("Please enter a valid email address.");
+          } else {
+            throw error;
+          }
+        }
+      } else {
+        setSuccessMessage("Profile updated successfully!");
+      }
+      setUserData({ ...editData, displayName });
       setEditMode(false);
       setEditData({});
-      setSuccessMessage("Profile updated successfully!");
     } catch (error) {
       let errorMessage = "Failed to update profile.";
       switch (error.code) {
-        case "auth/requires-recent-login":
-          errorMessage = "Please re-authenticate to update your email.";
-          break;
         case "auth/email-already-in-use":
           errorMessage = "This email is already in use by another account.";
           break;
@@ -226,6 +283,38 @@ const Profile = () => {
     } finally {
       setIsUpdating(false);
     }
+  };
+
+  const handleReauthAndSave = async () => {
+    const reauthSuccess = await handleReauthenticate();
+    if (reauthSuccess) {
+      try {
+        await verifyBeforeUpdateEmail(auth.currentUser, editData.email);
+        setSuccessMessage(
+          `Profile updated! A verification email has been sent to ${editData.email}. Please verify to update your email.`
+        );
+        setPendingEmail(editData.email);
+        setUserData({
+          ...editData,
+          displayName: `${editData.firstName.trim()} ${editData.lastName.trim()}`,
+        });
+        setEditMode(false);
+        setEditData({});
+        setShowReauthForm(false);
+        setReauthPassword("");
+      } catch (error) {
+        let errorMessage = "Failed to send verification email.";
+        if (error.code === "auth/email-already-in-use") {
+          errorMessage = "This email is already in use by another account.";
+        } else if (error.code === "auth/invalid-email") {
+          errorMessage = "Please enter a valid email address.";
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+        setApiError(errorMessage);
+      }
+    }
+    setIsUpdating(false);
   };
 
   const handlePasswordChange = async () => {
@@ -486,23 +575,92 @@ const Profile = () => {
                     placeholder="Phone number"
                   />
                 </div>
-                <button
-                  onClick={handleSaveProfile}
-                  disabled={isUpdating || !isOnline}
-                  className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-2 px-4 rounded-xl font-semibold hover:from-green-700 hover:to-green-800 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isUpdating ? (
-                    <div className="flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Saving...
+                {showReauthForm ? (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Current Password (Required to update email)
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showPasswords.current ? "text" : "password"}
+                          value={reauthPassword}
+                          onChange={(e) => setReauthPassword(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                          placeholder="Current password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowPasswords((prev) => ({
+                              ...prev,
+                              current: !prev.current,
+                            }))
+                          }
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        >
+                          {showPasswords.current ? (
+                            <EyeOff className="w-4 h-4" />
+                          ) : (
+                            <Eye className="w-4 h-4" />
+                          )}
+                        </button>
+                      </div>
+                      {reauthError && (
+                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                          {reauthError}
+                        </p>
+                      )}
                     </div>
-                  ) : (
-                    <>
-                      <Save className="w-4 h-4 inline mr-2" />
-                      Save Changes
-                    </>
-                  )}
-                </button>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={handleReauthAndSave}
+                        disabled={isUpdating || !isOnline}
+                        className="flex-1 bg-gradient-to-r from-green-600 to-green-700 text-white py-2 px-4 rounded-xl font-semibold hover:from-green-700 hover:to-green-800 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isUpdating ? (
+                          <div className="flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                            Saving...
+                          </div>
+                        ) : (
+                          <>
+                            <Save className="w-4 h-4 inline mr-2" />
+                            Save with Re-authentication
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowReauthForm(false);
+                          setReauthPassword("");
+                          setReauthError("");
+                        }}
+                        className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleSaveProfile}
+                    disabled={isUpdating || !isOnline}
+                    className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-2 px-4 rounded-xl font-semibold hover:from-green-700 hover:to-green-800 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isUpdating ? (
+                      <div className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                        Saving...
+                      </div>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4 inline mr-2" />
+                        Save Changes
+                      </>
+                    )}
+                  </button>
+                )}
               </>
             ) : (
               // View Mode
@@ -519,6 +677,11 @@ const Profile = () => {
                   <p className="text-gray-700 dark:text-gray-300">
                     <span className="font-medium">Email:</span>{" "}
                     {userData.email || "Not set"}
+                    {pendingEmail && pendingEmail !== userData.email && (
+                      <span className="text-sm text-blue-600 dark:text-blue-400 ml-2">
+                        (Pending: {pendingEmail})
+                      </span>
+                    )}
                   </p>
                 </div>
                 <div className="flex items-center space-x-2">
