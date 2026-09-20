@@ -33,10 +33,14 @@ uvicorn app.main:app --reload # http://localhost:8000
 
 API docs (interactive): http://localhost:8000/docs
 
-To load the original 20 destinations and 6 news items into the database:
+To load the original 20 destinations and 6 news items into the database, along
+with their images:
 
 ```bash
-python seed/migrate_from_js.py seed/tripsData.json seed/newsEvents.json
+python seed/migrate_from_js.py \
+  --trips seed/tripsData.json \
+  --news seed/newsEvents.json \
+  --images-dir ../frontend/public
 ```
 
 ### 2. Frontend
@@ -54,6 +58,12 @@ The frontend reads these from `frontend/.env`:
 | `VITE_API_BASE_URL` | Where the backend is. `http://localhost:8000` in development. |
 | `VITE_GOOGLE_CLIENT_ID` | Google Sign-In. Must match `GOOGLE_CLIENT_ID` in `backend/.env`. |
 | `VITE_GOOGLE_MAPS_API_KEY` | Maps on the destination detail page. |
+
+## Testing it
+
+See [TESTING.md](TESTING.md) for a step-by-step walkthrough — from an empty
+database through to creating a destination from the admin panel and seeing it
+appear on the public site.
 
 ## The admin panel
 
