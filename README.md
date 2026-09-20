@@ -1,148 +1,88 @@
-# Meakutes-Khmer មគ្គុទេសក៍
+# Meakutes-Khmer
 
-**Meakutes-Khmer** is a web application developed to promote tourism in Cambodia, one of the oldest countries in Southeast Asia with a rich cultural heritage. Cambodia boasts a variety of tourist attractions, from historical resorts like the luxurious and awe-inspiring temples built by Khmer ancestors to innovative modern resorts, stunning mountain landscapes, diverse wildlife, and some of the most beautiful beaches in Asia. These attractions have the potential to draw both national and international visitors. However, the COVID-19 pandemic caused a significant decline in tourism, impacting local livelihoods.
+Cambodian tourism platform — discover destinations, read tourism news and events,
+save favourites, and leave reviews. Content is managed from an admin panel in the
+site itself, not by editing code.
 
-To address this, we, the students of the Department of Information Technology Engineering (8th generation) at Lao Thomorn, under the guidance of our advisor, Ky Sok Lay, created this final-year project. Meakutes-Khmer aims to promote new and beautiful tourist sites across Cambodia, helping Cambodians and foreign visitors discover these areas. By doing so, we hope to benefit society, improve the livelihoods of people around these tourist sites, and contribute to the recovery of Cambodia’s tourism industry.
+## Layout
 
----
+```
+.
+├── frontend/   React + Vite app (the public site and the /admin panel)
+└── backend/    FastAPI + MySQL API
+```
 
-## Table of Contents
+Both halves live in one git repository. The frontend talks to the backend over
+HTTP only — it never reaches the database directly.
 
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Setup Instructions](#setup-instructions)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Credits](#credits)
+## Running it locally
 
----
+You need two terminals: one for the backend, one for the frontend.
 
-## Features
+### 1. Backend
 
-- **Interactive Destination Listings**: Browse a curated list of 100 Cambodian tourist destinations with detailed information.
-- **Search and Filter**: Easily find destinations by name, description, or province.
-- **Sort Functionality**: Sort destinations by rating, reviews, name, or accessibility.
-- **Star Rating System**: Rate destinations with an interactive 1-5 star system (ratings stored locally).
-- **Pagination**: A "Load More" button to efficiently browse through destinations.
-- **Responsive Design**: Optimized for both desktop and mobile devices.
+```bash
+cd backend
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env          # then fill in real values
+docker compose up -d          # starts MySQL on localhost:3306
+alembic upgrade head          # creates all the tables
+uvicorn app.main:app --reload # http://localhost:8000
+```
 
----
+API docs (interactive): http://localhost:8000/docs
 
-## Technologies Used
+To load the original 20 destinations and 6 news items into the database:
 
-- **React.js**: A JavaScript library for building a dynamic and interactive user interface.
-- **Firebase**: Used for backend services, such as authentication, database management, and hosting (if applicable).
-- **Tailwind CSS**: A utility-first CSS framework for creating a modern, responsive design.
-- **React Router**: For managing navigation between pages (e.g., Home and Discover).
-- **JavaScript (ES6+)**: The core language powering the app’s logic.
-- **Node.js**: Required for the development environment to run the React app.
-- **Github**: For controll tools
-- **Cloudflare**: Hosting Web
----
+```bash
+python seed/migrate_from_js.py seed/tripsData.json seed/newsEvents.json
+```
 
-## Setup Instructions
+### 2. Frontend
 
-Follow these steps to set up **Meakutes-Khmer** on your local machine:
+```bash
+cd frontend
+npm install
+npm run dev                   # http://localhost:5173
+```
 
-### Prerequisites
+The frontend reads these from `frontend/.env`:
 
-- **Node.js**: Version 14 or higher (download from [nodejs.org](https://nodejs.org/)).
-- **Git**: To clone the repository (download from [git-scm.com](https://git-scm.com/)).
-- **Firebase Account**: Required for backend services (if used). Set up a Firebase project at [firebase.google.com](https://firebase.google.com/).
+| Variable | What it's for |
+| --- | --- |
+| `VITE_API_BASE_URL` | Where the backend is. `http://localhost:8000` in development. |
+| `VITE_GOOGLE_CLIENT_ID` | Google Sign-In. Must match `GOOGLE_CLIENT_ID` in `backend/.env`. |
+| `VITE_GOOGLE_MAPS_API_KEY` | Maps on the destination detail page. |
 
-### Steps
+## The admin panel
 
-1. **Clone the Repository**:
+Sign in, then go to `/admin` (a link also appears in the navbar for admin and
+editor accounts). From there you can manage destinations, news and events,
+categories and tags, the image library, reviews, and user roles.
 
-   ```bash
-   git clone https://github.com/Mxrn-Cyber/meakutes-khmer-y4-project.git
-   ```
+Roles:
 
-2. **Navigate to the Project Directory**:
+- **admin** — everything, including managing users and deleting content
+- **editor** — create and edit content, moderate reviews
+- **user** — normal visitor: favourites and reviews
 
-   ```bash
-   cd meakutes-khmer-y4-project
-   ```
+### Creating the first admin
 
-3. **Install Dependencies**:
+There is no UI for this, because it has to happen before any admin exists.
+Register a normal account through the site, then promote it in MySQL:
 
-   ```bash
-   npm install
-   ```
+```sql
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r
+WHERE u.email = 'you@example.com' AND r.name = 'admin';
+```
 
-   or
+After that, manage every other account from the Users & Roles page.
 
-   ```bash
-   yarn install
-   ```
+## Still to do
 
-   This will install all required packages, including React, Firebase, Tailwind CSS, and React Router.
-
-4. **Set Up Firebase** (if applicable):
-
-   - Create a Firebase project in the [Firebase Console](https://console.firebase.google.com/).
-   - Enable the services you need (e.g., Firestore for database, Authentication for user login).
-   - Copy your Firebase configuration (API keys, project ID, etc.) from the Firebase Console.
-   - Create a `.env` file in the root of your project and add your Firebase config:
-     ```
-     REACT_APP_FIREBASE_API_KEY=your-api-key
-     REACT_APP_FIREBASE_AUTH_DOMAIN=your-auth-domain
-     REACT_APP_FIREBASE_PROJECT_ID=your-project-id
-     REACT_APP_FIREBASE_STORAGE_BUCKET=your-storage-bucket
-     REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
-     REACT_APP_FIREBASE_APP_ID=your-app-id
-     ```
-   - Ensure Firebase is initialized in your app (e.g., in `src/firebase.js`).
-
-5. **Run the Development Server**:
-
-   ```bash
-   npm start
-   ```
-
-   or
-
-   ```bash
-   yarn start
-   ```
-
-   The app will open in your browser at `http://localhost:3000`.
-
----
-
-## Usage
-
-Once the app is running, you can:
-
-- **Explore the Home Page**: View an introductory slideshow of Cambodian destinations.
-- **Discover Destinations**: Navigate to the Discover page to browse, search, filter, and sort through 100 tourist sites.
-- **Rate Destinations**: Use the star rating system to rate destinations (ratings are stored locally in this version).
-- **Load More Destinations**: Click the "Load More" button on the Discover page to see additional listings.
-
----
-
-## Contributing
-
-We welcome contributions to **Meakutes-Khmer**! Here’s how you can get involved:
-
-- **Report Issues**: Submit bugs or feature requests via the GitHub issue tracker.
-- **Submit Pull Requests**: Fork the repository, make your changes, and submit a pull request for review.
-- **Code Standards**: Ensure your code is clean, well-documented, and follows the project’s style guidelines.
-
-For more details, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file (if available).
-
----
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-## Credits
-
-- **Project Team**: Students of the Department of Information Technology Engineering (8th generation) at Lao Thomorn.
-- **Advisor**: Ky Sok Lay
-
----
+`frontend/src/pages/Profile.jsx`, `ForgotPassword.jsx` and `ResetPassword.jsx`
+still use Firebase, along with `frontend/src/firebase.js`. Everything else runs on
+the new backend. Once those three are migrated, Firebase and the leftover
+`frontend/src/pages/data/*.js` files can be deleted.

@@ -1,0 +1,84 @@
+// Replaces Firebase Auth's onAuthStateChanged/signOut with the backend's
+// cookie-based session. Wrap the app in <AuthProvider> once (see App.jsx)
+// and read/act on the current user anywhere with useAuth().
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { api } from "../api/client";
+
+const AuthContext = createContext(null);
+
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
+  return ctx;
+};
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const refresh = useCallback(async () => {
+    try {
+      const me = await api.me();
+      setUser(me);
+    } catch {
+      setUser(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    refresh().finally(() => setIsLoading(false));
+  }, [refresh]);
+
+  const login = useCallback(async (email, password) => {
+    const me = await api.login({ email, password });
+    setUser(me);
+    return me;
+  }, []);
+
+  const register = useCallback(async ({ email, password, firstName, lastName }) => {
+    const me = await api.register({
+      email,
+      password,
+      first_name: firstName,
+      last_name: lastName,
+    });
+    setUser(me);
+    return me;
+  }, []);
+
+  const loginWithGoogle = useCallback(async (idToken) => {
+    const me = await api.loginWithGoogle(idToken);
+    setUser(me);
+    return me;
+  }, []);
+
+  const logout = useCallback(async () => {
+    await api.logout().catch(() => {});
+    setUser(null);
+  }, []);
+
+  const updateProfile = useCallback(async (payload) => {
+    const me = await api.updateMe(payload);
+    setUser(me);
+    return me;
+  }, []);
+
+  const isAdmin = Boolean(user?.roles?.includes("admin"));
+  const isEditor = isAdmin || Boolean(user?.roles?.includes("editor"));
+
+  const value = {
+    user,
+    isLoading,
+    isAuthenticated: Boolean(user),
+    isAdmin,
+    isEditor,
+    login,
+    register,
+    loginWithGoogle,
+    logout,
+    refresh,
+    updateProfile,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
